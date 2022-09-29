@@ -1,0 +1,77 @@
+﻿<Window x:Class="GraphicsEditor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GraphicsEditor"
+        mc:Ignorable="d"
+        Title="Paint 15:28" Style="{StaticResource defaultWindow}" SizeChanged="Window_SizeChanged">
+    <Window.Resources>
+        <Style TargetType="Button" BasedOn="{StaticResource defaultButton}">
+            <Setter Property="Margin" Value="2"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" BorderThickness="2" BorderBrush="Black" Background="AntiqueWhite">
+                <Grid Cursor="Pen">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0" Width="40" Height="40" Background="Black"/>
+                        <TextBlock Grid.Column="1" Text="Цвет" Margin="5,0,5,0" VerticalAlignment="Center"/>                        
+                    </Grid>
+                    
+                    <!--Instruments panel-->
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Button Grid.Row="0" Grid.Column="0" Content="Карандаш"/>
+                        <Button Grid.Row="0" Grid.Column="1" Content=" ... "/>
+                        <Button Grid.Row="1" Grid.Column="0" Content="Линия"/>
+                        <Button Grid.Row="1" Grid.Column="1" Content=" ... "/>
+                    </Grid>
+
+                    <ListBox Grid.Row="2"/>
+                </Grid>
+            </Border>
+
+            <Image Grid.Column="1" x:Name="field" Cursor="Pen" MouseMove="Canvas_MouseMove" MouseDown="Canvas_MouseDown"/>
+            <Button Grid.Column="1" x:Name="uou" Visibility="Hidden"/>
+        </Grid>
+
+        <StatusBar Grid.Row="1">
+            <TextBlock x:Name="status_CursorPosition"/>
+            <TextBlock x:Name="status_debug"/>
+        </StatusBar>
+    </Grid>
+</Window>
