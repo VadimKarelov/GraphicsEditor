@@ -61,6 +61,28 @@ namespace GraphicsEditor.Modules
             });
         }
 
+        public async void AddLineAsync(int x1, int y1, int x2, int y2, int size, Color cl)
+        {
+            await Task.Run(() =>
+            {
+                lock (_elements)
+                {
+                    _elements.Add(new VLine(cl, x1, y1, x2, y2, size));
+                }
+            });
+        }
+
+        public async void AddLineAsync(VLine line)
+        {
+            await Task.Run(() =>
+            {
+                lock (_elements)
+                {
+                    _elements.Add(line);
+                }
+            });
+        }
+
         public async void InitAsyncRender()
         {
             while (true)
@@ -68,6 +90,7 @@ namespace GraphicsEditor.Modules
                 await Task.Run(() =>
                 {
                     Render();
+                    Task.Delay(10);
                 });
             }
         }
@@ -102,7 +125,11 @@ namespace GraphicsEditor.Modules
             {
                 if (el is VPoint pt)
                 {
-                    gr.FillEllipse(new SolidBrush(pt.Color), pt.X, pt.Y, pt.Size, pt.Size);
+                    gr.FillEllipse(new SolidBrush(pt.Color), pt.RenderX, pt.RenderY, pt.Size, pt.Size);
+                }
+                else if (el is VLine ln)
+                {
+                    gr.DrawLine(new System.Drawing.Pen(ln.Color, ln.Size), ln.X1, ln.Y1, ln.X2, ln.Y2);
                 }
             }
 

@@ -8,20 +8,23 @@ using System.Threading.Tasks;
 namespace GraphicsEditor.Modules.Elements
 {
     internal class VPoint : IElement
-    {        
-        public int X { get; set; }
-        public int Y { get; set; }
+    {
         public Color Color { get; set; }
 
-        public int Size => _size;
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int RenderX { get; set; }
+        public int RenderY { get; set; }
 
-        private int _size;
+        public int Size { get; set; }
 
         public VPoint(int x, int y, int size, Color cl)
         {
-            X = x - size / 2;
-            Y = y - size / 2;
-            _size = size / 2;
+            RenderX = x - size / 2;
+            RenderY = y - size / 2;
+            X = x;
+            Y = y;
+            Size = size;
             Color = cl;
         }
     }
