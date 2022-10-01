@@ -13,11 +13,26 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
+        <!--<ToolBarTray Grid.Row="0">
+            <ToolBar>
+                <Button Content="Курсор"/>
+                <Button Content="Карандаш"/>
+                <Button Content="Ластик"/>
+                <Button Content="Линия"/>
+            </ToolBar>
+            <ToolBar Margin="10,0,0,0">
+                <Button Width="20" Height="20" Background="Black"/>
+                <TextBlock Text="Размер:" Margin="10,0,0,0"/>
+                <Slider Name="sl_Size1" Minimum="2" Maximum="10" MinWidth="80" VerticalAlignment="Center"/>
+            </ToolBar>
+        </ToolBarTray>-->
+
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition/>
@@ -26,6 +41,9 @@
             <Border Grid.Column="0" BorderThickness="2" BorderBrush="Black" Background="AntiqueWhite">
                 <Grid Cursor="Pen">
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition/>
@@ -48,8 +66,24 @@
                         <Slider Grid.Row="1" Grid.Column="1" Name="sl_Size" Minimum="2" Maximum="10" MinWidth="80"/>
                     </Grid>
 
+                    <TextBlock Grid.Row="1" Text="Плоскости" HorizontalAlignment="Center"/>
+
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0" Content="XY" x:Name="bt_XY" Tag="XY"/>
+                        <Button Grid.Column="1" Content="XZ" x:Name="bt_XZ" Tag="XZ"/>
+                        <Button Grid.Column="2" Content="YZ" x:Name="bt_YZ" Tag="YZ"/>
+                    </Grid>
+
+                    <TextBlock Grid.Row="3" Text="Плоскости" HorizontalAlignment="Center"/>
+                    
                     <!--Instruments panel-->
-                    <Grid Grid.Row="1">
+                    <Grid Grid.Row="4">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="28*"/>
                             <ColumnDefinition Width="50*"/>
@@ -77,7 +111,7 @@
                         <Button Grid.Row="3" Grid.Column="2" Content=" ... " Margin="2,2,2,2"/>
                     </Grid>
 
-                    <ListBox Grid.Row="2"/>
+                    <ListBox Grid.Row="5"/>
                 </Grid>
             </Border>
 
@@ -85,7 +119,7 @@
             <Button Grid.Column="1" x:Name="uou" Visibility="Hidden"/>
         </Grid>
 
-        <StatusBar Grid.Row="1">
+        <StatusBar Grid.Row="2">
             <TextBlock x:Name="status_CursorPosition"/>
             <TextBlock x:Name="status_debug"/>
         </StatusBar>

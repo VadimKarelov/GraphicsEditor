@@ -30,6 +30,7 @@ namespace GraphicsEditor
 
         private System.Drawing.Color _selectedColor;
         private Instrument _selectedInstrument;
+        private Plane _selectedPlane;
 
         private Engine _engine;
         private DispatcherTimer _renderTimer;
@@ -55,6 +56,9 @@ namespace GraphicsEditor
 
             _engine.InitAsyncRender();
 
+            ChangeInstrument_Click(bt_arrow, new RoutedEventArgs());
+            ChangePlane_Click(bt_XY, new RoutedEventArgs());
+
             DelayStartAsync();
         }
 
@@ -78,7 +82,6 @@ namespace GraphicsEditor
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
             Point pos = e.GetPosition(field);
-            //status_CursorPosition.Text = $"{(int)pos.X};{(int)pos.Y}";
 
             switch (_selectedInstrument)
             {
@@ -90,6 +93,7 @@ namespace GraphicsEditor
                 case Instrument.Line:
                     {
                         VLine line = new VLine(_selectedColor, (int)pos.X, (int)pos.Y, (int)pos.X, (int)pos.Y, (int)sl_Size.Value);
+                        _editingElement = line;
                         _engine.AddLineAsync(line);
                         break;
                     }
@@ -99,7 +103,7 @@ namespace GraphicsEditor
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
             Point pos = e.GetPosition(field);
-            status_CursorPosition.Text = $"{(int)pos.X};{(int)pos.Y}";
+            DrawCursorPosition(pos);
 
             switch (_selectedInstrument)
             {
@@ -126,13 +130,11 @@ namespace GraphicsEditor
         private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
             Point pos = e.GetPosition(field);
-            //status_CursorPosition.Text = $"{(int)pos.X};{(int)pos.Y}";
 
             switch (_selectedInstrument)
             {
                 case Instrument.Pen:
                     {
-                        _engine.AddPointAsync((int)pos.X, (int)pos.Y, (int)sl_Size.Value, _selectedColor);
                         break;
                     }
                 case Instrument.Line:
@@ -147,6 +149,58 @@ namespace GraphicsEditor
                     }
             }
         }
+
+        #region planes
+        private async void DrawCursorPosition(Point pos)
+        {
+            int x = -1, y = -1, z = -1;
+            await Task.Run(() =>
+            {
+                GetCoordsFromMousePosition(pos, ref x, ref y, ref z);
+            });
+            status_CursorPosition.Text = $"{x};{y};{z}";
+        }
+
+        private void GetCoordsFromMousePosition(Point pos, ref int x, ref int y, ref int z)
+        {
+            x = -1; y = -1; z = -1;
+            switch (_selectedPlane)
+            {
+                case Plane.XY: x = (int)pos.X; y = (int)pos.Y; z = 0; break;
+                case Plane.XZ: x = (int)pos.X; y = 0; z = (int)pos.Y; break;
+                case Plane.YZ: x = 0; y = (int)pos.X; z = x = (int)pos.X; break;
+            }
+        }
+
+        enum Plane
+        {
+            XY,
+            XZ,
+            YZ
+        }
+
+        private void ChangePlane_Click(object sender, RoutedEventArgs e)
+        {
+            string t = ((Button)sender).Tag.ToString();
+
+            switch (t)
+            {
+                case "XY": _selectedInstrument = Instrument.Nothing; break;
+                case "XZ": _selectedInstrument = Instrument.Pen; break;
+                case "YZ": _selectedInstrument = Instrument.Eraser; break;
+            }
+
+            SetPlanesButtonsInactive();
+            ((Button)sender).Background = _selectedButtonBrush;
+        }
+
+        private void SetPlanesButtonsInactive()
+        {
+            bt_XY.Background = _defaultButtonBrush;
+            bt_XZ.Background = _defaultButtonBrush;
+            bt_YZ.Background = _defaultButtonBrush;
+        }
+        #endregion
 
         #region window size settings
         private void ChangeFieldSize()
