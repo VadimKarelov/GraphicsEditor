@@ -13,10 +13,17 @@ namespace GraphicsEditor.Modules.Elements
 
         public int X1 { get; set; }
         public int Y1 { get; set; }
+        public int Z1 { get; set; }
         public int X2 { get; set; }
         public int Y2 { get; set; }
+        public int Z2 { get; set; }
 
         public int Size { get; set; }
+
+        public int RenderX1 { get; set; }
+        public int RenderY1 { get; set; }
+        public int RenderX2 { get; set; }
+        public int RenderY2 { get; set; }
 
         public VLine(Color color, int x1, int y1, int x2, int y2, int size)
         {
@@ -26,6 +33,11 @@ namespace GraphicsEditor.Modules.Elements
             X2 = x2;
             Y2 = y2;
             Size = size;
+        }
+
+        public void ChangeProjection(Camera plane)
+        {
+
         }
     }
 }

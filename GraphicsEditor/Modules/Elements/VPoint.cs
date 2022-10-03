@@ -13,6 +13,7 @@ namespace GraphicsEditor.Modules.Elements
 
         public int X { get; set; }
         public int Y { get; set; }
+        public int Z { get; set; }
         public int RenderX { get; set; }
         public int RenderY { get; set; }
 
@@ -26,6 +27,11 @@ namespace GraphicsEditor.Modules.Elements
             Y = y;
             Size = size;
             Color = cl;
+        }
+
+        public void ChangeProjection(Camera camera)
+        {
+
         }
     }
 }
