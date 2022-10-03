@@ -19,12 +19,13 @@ namespace GraphicsEditor.Modules.Elements
 
         public int Size { get; set; }
 
-        public VPoint(int x, int y, int size, Color cl)
+        public VPoint(int x, int y, int z, int size, Color cl)
         {
             RenderX = x - size / 2;
             RenderY = y - size / 2;
             X = x;
             Y = y;
+            Z = z;
             Size = size;
             Color = cl;
         }

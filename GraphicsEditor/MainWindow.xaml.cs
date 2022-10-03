@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Color = System.Drawing.Color;
 
 namespace GraphicsEditor
 {
@@ -79,6 +80,7 @@ namespace GraphicsEditor
         }
         #endregion
 
+        #region handle mouse events
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
             Point pos = e.GetPosition(field);
@@ -86,15 +88,14 @@ namespace GraphicsEditor
             switch (_selectedInstrument)
             {
                 case Instrument.Pen:
-                    {
-                        _engine.AddPointAsync((int)pos.X, (int)pos.Y, (int)sl_Size.Value, _selectedColor);
+                    {                       
+                        AddPoint(pos, (int)sl_Size.Value);
                         break;
                     }
                 case Instrument.Line:
                     {
-                        VLine line = new VLine(_selectedColor, (int)pos.X, (int)pos.Y, (int)pos.X, (int)pos.Y, (int)sl_Size.Value);
+                        VLine line = AddLine(pos);
                         _editingElement = line;
-                        _engine.AddLineAsync(line);
                         break;
                     }
             }            
@@ -110,8 +111,8 @@ namespace GraphicsEditor
                 case Instrument.Pen:
                     {
                         if (e.LeftButton == MouseButtonState.Pressed)
-                        {
-                            _engine.AddPointAsync((int)pos.X, (int)pos.Y, (int)sl_Size.Value, _selectedColor);
+                        {                            
+                            AddPoint(pos, (int)sl_Size.Value);
                         }
                         break;
                     }
@@ -119,8 +120,7 @@ namespace GraphicsEditor
                     {
                         if (_editingElement != null && _editingElement is VLine ln)
                         {
-                            ln.X2 = (int)pos.X;
-                            ln.Y2 = (int)pos.Y;
+                            ChangeLineCoords(ln, pos);
                         }
                         break;
                     }
@@ -141,14 +141,60 @@ namespace GraphicsEditor
                     {
                         if (_editingElement != null && _editingElement is VLine ln)
                         {
-                            ln.X2 = (int)pos.X;
-                            ln.Y2 = (int)pos.Y;
+                            ChangeLineCoords(ln, pos);
                             _editingElement = null;
                         }
                         break;
                     }
             }
         }
+        #endregion
+
+        #region add elements
+        private async void AddPoint(Point pos, int size)
+        {
+            await Task.Run(() =>
+            {
+                int x = 0, y = 0, z = 0;                
+                switch (_selectedPlane)
+                {
+                    case Plane.XY: x = (int)pos.X; y = (int)pos.Y; break;
+                    case Plane.XZ: x = (int)pos.X; z = (int)pos.Y; break;
+                    case Plane.YZ: y = (int)pos.X; z = (int)pos.Y; break;                    
+                }
+                VPoint pt = new(x, y, z, size, _selectedColor);
+                _engine.AddPointAsync(pt);
+            });
+        }
+
+        private VLine AddLine(Point pos)
+        {
+            int x = 0, y = 0, z = 0;
+            switch (_selectedPlane)
+            {
+                case Plane.XY: x = (int)pos.X; y = (int)pos.Y; break;
+                case Plane.XZ: x = (int)pos.X; z = (int)pos.Y; break;
+                case Plane.YZ: y = (int)pos.X; z = (int)pos.Y; break;
+            }
+            VLine ln = new(_selectedColor, x, y, z, x, y, z, (int)sl_Size.Value);
+            _engine.AddLineAsync(ln);
+            return ln;
+        }
+
+        private void ChangeLineCoords(VLine line, Point pos)
+        {
+            int x = 0, y = 0, z = 0;
+            switch (_selectedPlane)
+            {
+                case Plane.XY: x = (int)pos.X; y = (int)pos.Y; break;
+                case Plane.XZ: x = (int)pos.X; z = (int)pos.Y; break;
+                case Plane.YZ: y = (int)pos.X; z = (int)pos.Y; break;
+            }
+            line.X2 = x;
+            line.Y2 = y;
+            line.Z2 = z;
+        }
+        #endregion
 
         #region planes
         private async void DrawCursorPosition(Point pos)

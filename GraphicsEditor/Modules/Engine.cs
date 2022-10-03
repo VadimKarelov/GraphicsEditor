@@ -47,6 +47,7 @@ namespace GraphicsEditor.Modules
             _camera = new Camera();
         }
 
+        #region change engine parameters
         public async void ChangeFieldSizeAsync(int width, int height)
         {
             await Task.Run(() =>
@@ -70,25 +71,38 @@ namespace GraphicsEditor.Modules
                 }
             });
         }
+        #endregion
 
-        public async void AddPointAsync(int x, int y, int size, Color cl)
+        #region add elements
+        public async void AddPointAsync(int x, int y, int z, int size, Color cl)
         {
             await Task.Run(() =>
             {
                 lock (_elements)
                 {
-                    _elements.Add(new VPoint(x, y, size, cl));
+                    _elements.Add(new VPoint(x, y, z, size, cl));
                 }
             });
         }
 
-        public async void AddLineAsync(int x1, int y1, int x2, int y2, int size, Color cl)
+        public async void AddPointAsync(VPoint point)
         {
             await Task.Run(() =>
             {
                 lock (_elements)
                 {
-                    _elements.Add(new VLine(cl, x1, y1, x2, y2, size));
+                    _elements.Add(point);
+                }
+            });
+        }
+
+        public async void AddLineAsync(int x1, int y1, int z1, int x2, int y2, int z2, int size, Color cl)
+        {
+            await Task.Run(() =>
+            {
+                lock (_elements)
+                {
+                    _elements.Add(new VLine(cl, x1, y1, z1, x2, y2, z2, size));
                 }
             });
         }
@@ -103,7 +117,9 @@ namespace GraphicsEditor.Modules
                 }
             });
         }
+        #endregion
 
+        #region async render
         public async void InitAsyncRender()
         {
             while (true)
@@ -123,11 +139,14 @@ namespace GraphicsEditor.Modules
                 Render();
             });
         }
+        #endregion
 
         private void Render()
         {
             if (_isCameraChanged)
                 ChangeCameraAsync();
+            else
+                ComputeRenderParameters();
 
             Bitmap btmp;
             lock (_sizeLocker)
@@ -187,6 +206,23 @@ namespace GraphicsEditor.Modules
                 }
             });
             _isCameraChanged = false;
+        }
+
+        private void ComputeRenderParameters()
+        {
+            foreach (IElement elem in _elements)
+            {
+                if (elem is VLine)
+                {
+                    Task.Run(() =>
+                    {
+                        lock (elem)
+                        {
+                            elem.ChangeProjection(_camera);
+                        }
+                    });
+                }
+            }
         }
 
         private BitmapImage ToBitmapImage(Bitmap bitmap)
