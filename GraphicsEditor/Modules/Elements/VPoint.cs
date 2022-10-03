@@ -34,5 +34,15 @@ namespace GraphicsEditor.Modules.Elements
         {
             camera.ChangeProjection(this);
         }
+
+        public override string ToString()
+        {
+            return $"VPoint ({X};{Y};{Z}) [{Size}]";
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is VPoint pt && this.X == pt.X && this.Y == pt.Y && this.Z == pt.Z;
+        }
     }
 }

@@ -21,10 +21,13 @@ namespace GraphicsEditor.Modules
     internal class Engine
     {
         public List<IElement> Elements => _elements;
+        public List<string> StringElements => _stringElements;
         public BitmapImage BitmapImage => _bitmapImg;
         public Camera Camera => _camera;
 
         private List<IElement> _elements = new List<IElement>();
+
+        private List<string> _stringElements = new();
 
         private BitmapImage _bitmapImg;
 
@@ -119,7 +122,7 @@ namespace GraphicsEditor.Modules
         }
         #endregion
 
-        #region async render
+        #region async render and background processes
         public async void InitAsyncRender()
         {
             while (true)
@@ -127,6 +130,8 @@ namespace GraphicsEditor.Modules
                 await Task.Run(() =>
                 {
                     Render();
+                    UpdateElementsList();
+                    Optimization();
                     Task.Delay(10);
                 });
             }
@@ -139,14 +144,71 @@ namespace GraphicsEditor.Modules
                 Render();
             });
         }
+
+        private async void UpdateElementsList()
+        {
+            await Task.Run(() =>
+            {
+                List<string> lines = new();
+
+                List<IElement> cpEl;
+
+                // copy elements
+                lock (_elements)
+                {
+                    cpEl = new List<IElement>(_elements);
+                }
+
+                foreach (var el in cpEl)
+                {
+                    lines.Add(el.ToString());
+                }
+
+                lock (_stringElements)
+                {
+                    _stringElements = lines;
+                }
+            });
+        }
+
+        private async void Optimization()
+        {
+            await Task.Run(() =>
+            {
+                List<IElement> cpEl;
+                List<IElement> toRemove = new();
+
+                // copy elements
+                lock (_elements)
+                {
+                    cpEl = new List<IElement>(_elements);
+                }
+
+                for (int i = cpEl.Count - 1; i > 0; i--)
+                {
+                    for (int j = i - 1; j >= 0; j--)
+                    {
+                        if (cpEl[i].Equals(cpEl[j]))
+                        {
+                            toRemove.Add(cpEl[j]);
+                        }
+                    }
+                }
+
+                lock (_elements)
+                {
+                    foreach (var item in toRemove)
+                    {
+                        _elements.Remove(item);
+                    }
+                }
+            });
+        }
         #endregion
 
         private void Render()
         {
-            if (_isCameraChanged)
-                ChangeCameraAsync();
-            else
-                ComputeRenderParameters();
+            ComputeRenderParameters();
 
             Bitmap btmp;
             lock (_sizeLocker)
@@ -210,18 +272,23 @@ namespace GraphicsEditor.Modules
 
         private void ComputeRenderParameters()
         {
-            foreach (IElement elem in _elements)
+            List<IElement> cpEl;
+
+            // copy elements
+            lock (_elements)
             {
-                if (elem is VLine)
+                cpEl = new List<IElement>(_elements);
+            }
+
+            foreach (IElement elem in cpEl)
+            {
+                Task.Run(() =>
                 {
-                    Task.Run(() =>
+                    lock (elem)
                     {
-                        lock (elem)
-                        {
-                            elem.ChangeProjection(_camera);
-                        }
-                    });
-                }
+                        elem.ChangeProjection(_camera);
+                    }
+                });
             }
         }
 

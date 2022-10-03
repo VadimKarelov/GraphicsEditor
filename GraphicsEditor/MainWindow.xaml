@@ -75,9 +75,9 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
 
-                        <Button Grid.Column="0" Content="XY" x:Name="bt_XY" Tag="XY"/>
-                        <Button Grid.Column="1" Content="XZ" x:Name="bt_XZ" Tag="XZ"/>
-                        <Button Grid.Column="2" Content="YZ" x:Name="bt_YZ" Tag="YZ"/>
+                        <Button Grid.Column="0" Content="XY" x:Name="bt_XY" Tag="XY" Click="ChangePlane_Click"/>
+                        <Button Grid.Column="1" Content="XZ" x:Name="bt_XZ" Tag="XZ" Click="ChangePlane_Click"/>
+                        <Button Grid.Column="2" Content="YZ" x:Name="bt_YZ" Tag="YZ" Click="ChangePlane_Click"/>
                     </Grid>
 
                     <TextBlock Grid.Row="3" Text="Плоскости" HorizontalAlignment="Center"/>
@@ -111,7 +111,7 @@
                         <Button Grid.Row="3" Grid.Column="2" Content=" ... " Margin="2,2,2,2"/>
                     </Grid>
 
-                    <ListBox Grid.Row="5"/>
+                    <ListBox Grid.Row="5" x:Name="lb_elements"/>
                 </Grid>
             </Border>
 

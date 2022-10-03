@@ -77,6 +77,7 @@ namespace GraphicsEditor
         private void UpdateField(object? sender, EventArgs e)
         {
             field.Source = _engine.BitmapImage;
+            lb_elements.ItemsSource = _engine.StringElements;
         }
         #endregion
 
@@ -88,7 +89,7 @@ namespace GraphicsEditor
             switch (_selectedInstrument)
             {
                 case Instrument.Pen:
-                    {                       
+                    {
                         AddPoint(pos, (int)sl_Size.Value);
                         break;
                     }
@@ -214,7 +215,7 @@ namespace GraphicsEditor
             {
                 case Plane.XY: x = (int)pos.X; y = (int)pos.Y; z = 0; break;
                 case Plane.XZ: x = (int)pos.X; y = 0; z = (int)pos.Y; break;
-                case Plane.YZ: x = 0; y = (int)pos.X; z = x = (int)pos.X; break;
+                case Plane.YZ: x = 0; y = (int)pos.X; z = (int)pos.Y; break;
             }
         }
 
@@ -231,9 +232,9 @@ namespace GraphicsEditor
 
             switch (t)
             {
-                case "XY": _selectedPlane = Plane.XY; break;
-                case "XZ": _selectedPlane = Plane.XZ; break;
-                case "YZ": _selectedPlane = Plane.XY; break;
+                case "XY": _selectedPlane = Plane.XY; _engine.ChangeCamera(ProjectionPlane.XY); break;
+                case "XZ": _selectedPlane = Plane.XZ; _engine.ChangeCamera(ProjectionPlane.XZ); break;
+                case "YZ": _selectedPlane = Plane.YZ; _engine.ChangeCamera(ProjectionPlane.YZ); break;
             }
 
             SetPlanesButtonsInactive();

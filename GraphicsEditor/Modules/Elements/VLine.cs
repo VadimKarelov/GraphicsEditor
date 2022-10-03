@@ -47,5 +47,16 @@ namespace GraphicsEditor.Modules.Elements
         {
             camera.ChangeProjection(this);
         }
+
+        public override string ToString()
+        {
+            return $"VLine ({X1};{Y1};{Z1})-({X2};{Y2};{Z2}) [{Size}]";
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is VLine pt && this.X1 == pt.X1 && this.Y1 == pt.Y1 && this.Z1 == pt.Z1
+                && this.X2 == pt.X2 && this.Y2 == pt.Y2 && this.Z2 == pt.Z2;
+        }
     }
 }

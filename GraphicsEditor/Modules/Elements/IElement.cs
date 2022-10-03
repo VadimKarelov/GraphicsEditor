@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -12,5 +13,9 @@ namespace GraphicsEditor.Modules.Elements
         public Color Color { get; set; }
 
         public void ChangeProjection(Camera camera);
+
+        public string ToString();
+
+        public bool Equals(object? obj);
     }
 }
