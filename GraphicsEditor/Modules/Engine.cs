@@ -13,6 +13,8 @@ using System.Drawing.Imaging;
 using System.Windows.Media;
 using Color = System.Drawing.Color;
 using System.Security.Policy;
+using System.Runtime.CompilerServices;
+using System.Windows.Media.Media3D;
 
 namespace GraphicsEditor.Modules
 {
@@ -20,14 +22,19 @@ namespace GraphicsEditor.Modules
     {
         public List<IElement> Elements => _elements;
         public BitmapImage BitmapImage => _bitmapImg;
+        public Camera Camera => _camera;
 
         private List<IElement> _elements = new List<IElement>();
 
         private BitmapImage _bitmapImg;
 
+        private Camera _camera;
+
         private int _width;
         private int _height;
         private object _sizeLocker;
+
+        private bool _isCameraChanged;
 
         public Engine(int width, int height)
         {
@@ -36,6 +43,8 @@ namespace GraphicsEditor.Modules
             _sizeLocker = new object();
 
             _bitmapImg = new BitmapImage();
+
+            _camera = new Camera();
         }
 
         public async void ChangeFieldSizeAsync(int width, int height)
@@ -46,6 +55,18 @@ namespace GraphicsEditor.Modules
                 {
                     _width = width;
                     _height = height;
+                }
+            });
+        }
+
+        public async void ChangeCamera(ProjectionPlane plane)
+        {
+            await Task.Run(() =>
+            {
+                lock (_camera)
+                {
+                    _camera.Plane = plane;
+                    _isCameraChanged = true;
                 }
             });
         }
@@ -105,6 +126,9 @@ namespace GraphicsEditor.Modules
 
         private void Render()
         {
+            if (_isCameraChanged)
+                ChangeCameraAsync();
+
             Bitmap btmp;
             lock (_sizeLocker)
             {
@@ -129,7 +153,7 @@ namespace GraphicsEditor.Modules
                 }
                 else if (el is VLine ln)
                 {
-                    gr.DrawLine(new System.Drawing.Pen(ln.Color, ln.Size), ln.X1, ln.Y1, ln.X2, ln.Y2);
+                    gr.DrawLine(new System.Drawing.Pen(ln.Color, ln.Size), ln.RenderX1, ln.RenderY1, ln.RenderX2, ln.RenderY2);
                 }
             }
 
@@ -139,6 +163,30 @@ namespace GraphicsEditor.Modules
             {
                 _bitmapImg = t;
             }
+        }
+
+        private async void ChangeCameraAsync()
+        {
+            await Task.Run(() =>
+            {
+                lock (_elements)
+                {
+                    foreach (var el in _elements)
+                    {
+                        Task.Run(() =>
+                        {
+                            lock (el)
+                            {
+                                lock (_camera)
+                                {
+                                    el.ChangeProjection(_camera);
+                                }
+                            }                            
+                        });
+                    }
+                }
+            });
+            _isCameraChanged = false;
         }
 
         private BitmapImage ToBitmapImage(Bitmap bitmap)

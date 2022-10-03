@@ -185,9 +185,9 @@ namespace GraphicsEditor
 
             switch (t)
             {
-                case "XY": _selectedInstrument = Instrument.Nothing; break;
-                case "XZ": _selectedInstrument = Instrument.Pen; break;
-                case "YZ": _selectedInstrument = Instrument.Eraser; break;
+                case "XY": _selectedPlane = Plane.XY; break;
+                case "XZ": _selectedPlane = Plane.XZ; break;
+                case "YZ": _selectedPlane = Plane.XY; break;
             }
 
             SetPlanesButtonsInactive();

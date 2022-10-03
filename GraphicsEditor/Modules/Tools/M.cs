@@ -28,10 +28,5 @@ namespace GraphicsEditor.Modules.Tools
 
             return r;
         }
-
-        static int[,] OperationProjectionXY(int[,] mat)
-        {
-            
-        }
     }
 }

@@ -31,7 +31,7 @@ namespace GraphicsEditor.Modules.Elements
 
         public void ChangeProjection(Camera camera)
         {
-
+            camera.ChangeProjection(this);
         }
     }
 }

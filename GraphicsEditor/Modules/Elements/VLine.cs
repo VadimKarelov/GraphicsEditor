@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Media3D;
 
 namespace GraphicsEditor.Modules.Elements
 {
@@ -35,9 +36,9 @@ namespace GraphicsEditor.Modules.Elements
             Size = size;
         }
 
-        public void ChangeProjection(Camera plane)
+        public void ChangeProjection(Camera camera)
         {
-
+            camera.ChangeProjection(this);
         }
     }
 }
