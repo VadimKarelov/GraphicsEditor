@@ -42,7 +42,8 @@ namespace GraphicsEditor.Modules.Elements
 
         public override bool Equals(object? obj)
         {
-            return obj is VPoint pt && this.X == pt.X && this.Y == pt.Y && this.Z == pt.Z;
+            return obj is VPoint pt && this.X == pt.X && this.Y == pt.Y && this.Z == pt.Z
+                && this.Color == pt.Color;
         }
     }
 }
