@@ -15,6 +15,7 @@ using Color = System.Drawing.Color;
 using System.Security.Policy;
 using System.Runtime.CompilerServices;
 using System.Windows.Media.Media3D;
+using System.Threading;
 
 namespace GraphicsEditor.Modules
 {
@@ -166,7 +167,8 @@ namespace GraphicsEditor.Modules
                     Render();
                     UpdateElementsList();
                     Optimization();
-                    Task.Delay(10);
+                    //Task.Delay(10);
+                    Thread.Sleep(10);
                 });
             }
         }
