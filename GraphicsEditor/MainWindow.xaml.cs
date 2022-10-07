@@ -170,9 +170,7 @@ namespace GraphicsEditor
         {
             await Task.Run(() =>
             {
-                int x = -1, y = -1, z = -1;
-                GetCoordsFromMousePosition(pos, ref x, ref y, ref z);
-                _engine.RemoveElementAtPointAsync(x, y, z, size);
+                _engine.RemoveElementAtPointAsync((int)pos.X, (int)pos.Y, size);
             });
         }
 
@@ -276,7 +274,8 @@ namespace GraphicsEditor
         #region window size settings
         private void ChangeFieldSize()
         {
-            _engine.ChangeFieldSizeAsync((int)uou.ActualWidth, (int)uou.ActualHeight);
+            if (uou != null && uou.ActualWidth != 0 && uou.ActualHeight != 0)
+                _engine.ChangeFieldSizeAsync((int)uou.ActualWidth, (int)uou.ActualHeight);
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)

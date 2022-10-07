@@ -78,7 +78,7 @@ namespace GraphicsEditor.Modules
         #endregion
 
         #region add elements
-        public async void RemoveElementAtPointAsync(int x, int y, int z, int eps)
+        public async void RemoveElementAtPointAsync(int x, int y, int eps)
         {
             await Task.Run(() =>
             {
@@ -95,10 +95,16 @@ namespace GraphicsEditor.Modules
                 {
                     if (cpEl[i] is VPoint pt)
                     {
-                        if (Math.Abs(pt.X - x) <= eps && Math.Abs(pt.Y - y) <= eps 
-                        && Math.Abs(pt.Z - z) <= eps)
+                        if (Math.Abs(pt.RenderX - x) <= eps && Math.Abs(pt.RenderY - y) <= eps)
                         {
                             toRemove.Add(pt);
+                        }
+                    }
+                    else if (cpEl[i] is VLine ln)
+                    {
+                        if (IsPointOnLine(x, y, ln))
+                        {
+                            toRemove.Add(ln);
                         }
                     }
                 }
@@ -344,6 +350,32 @@ namespace GraphicsEditor.Modules
 
                 return bitmapImage;
             }
+        }
+
+        private bool IsPointOnLine(int x, int y, VLine ln)
+        {
+            double tmpX = 0, tmpY = 0;
+            if (ln.RenderX2 - ln.RenderX1 == 0)
+            {
+                tmpX = ln.RenderX2;
+            }
+            else
+            {
+                tmpX = ln.RenderX2 - ln.RenderX1;
+            }
+            if (ln.RenderY2 -ln.RenderY1 == 0)
+            {
+                tmpY = ln.RenderY2;
+            }
+            else
+            {
+                tmpY = ln.RenderY2 - ln.RenderY1;
+            }
+            if (Math.Abs((x - ln.RenderX1) / tmpX - (y - ln.RenderY1) / tmpY) <= 0.05)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
