@@ -121,6 +121,7 @@
 
         <StatusBar Grid.Row="2">
             <TextBlock x:Name="status_CursorPosition"/>
+            <TextBlock x:Name="status_ElementsNumber"/>
             <TextBlock x:Name="status_debug"/>
         </StatusBar>
     </Grid>

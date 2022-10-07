@@ -78,6 +78,7 @@ namespace GraphicsEditor
         {
             field.Source = _engine.BitmapImage;
             //lb_elements.ItemsSource = _engine.StringElements;
+            status_ElementsNumber.Text = "Els: " + _engine.Elements.Count.ToString();
         }
         #endregion
 
