@@ -77,6 +77,40 @@ namespace GraphicsEditor.Modules
         #endregion
 
         #region add elements
+        public async void RemoveElementAtPointAsync(int x, int y, int z, int eps)
+        {
+            await Task.Run(() =>
+            {
+                List<IElement> cpEl;
+                List<IElement> toRemove = new();
+
+                // copy elements
+                lock (_elements)
+                {
+                    cpEl = new List<IElement>(_elements);
+                }
+
+                for (int i = cpEl.Count - 1; i >= 0; i--)
+                {
+                    if (cpEl[i] is VPoint pt)
+                    {
+                        if (Math.Abs(pt.X - x) <= eps && Math.Abs(pt.Y - y) <= eps 
+                        && Math.Abs(pt.Z - z) <= eps)
+                        {
+                            toRemove.Add(pt);
+                        }
+                    }
+                }
+
+                lock (_elements)
+                {
+                    foreach (var item in toRemove)
+                    {
+                        _elements.Remove(item);
+                    }
+                }
+            });
+        }
         public async void AddPointAsync(int x, int y, int z, int size, Color cl)
         {
             await Task.Run(() =>

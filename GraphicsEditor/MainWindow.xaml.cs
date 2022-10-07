@@ -77,7 +77,7 @@ namespace GraphicsEditor
         private void UpdateField(object? sender, EventArgs e)
         {
             field.Source = _engine.BitmapImage;
-            lb_elements.ItemsSource = _engine.StringElements;
+            //lb_elements.ItemsSource = _engine.StringElements;
         }
         #endregion
 
@@ -97,6 +97,11 @@ namespace GraphicsEditor
                     {
                         VLine line = AddLine(pos);
                         _editingElement = line;
+                        break;
+                    }
+                case Instrument.Eraser:
+                    {
+                        RemoveElementsAsync(pos, (int)sl_Size.Value);
                         break;
                     }
             }            
@@ -123,6 +128,14 @@ namespace GraphicsEditor
                         {
                             ChangeLineCoords(ln, pos);
                         }
+                        break;
+                    }
+                case Instrument.Eraser:
+                    {
+                        if (e.LeftButton == MouseButtonState.Pressed)
+                        {
+                            RemoveElementsAsync(pos, (int)sl_Size.Value);
+                        }                        
                         break;
                     }
             }            
@@ -152,6 +165,16 @@ namespace GraphicsEditor
         #endregion
 
         #region add elements
+        private async void RemoveElementsAsync(Point pos, int size)
+        {
+            await Task.Run(() =>
+            {
+                int x = -1, y = -1, z = -1;
+                GetCoordsFromMousePosition(pos, ref x, ref y, ref z);
+                _engine.RemoveElementAtPointAsync(x, y, z, size);
+            });
+        }
+
         private async void AddPoint(Point pos, int size)
         {
             await Task.Run(() =>
