@@ -11,23 +11,16 @@ namespace GraphicsEditor.Modules.Elements
     {
         public Color Color { get; set; }
 
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int Z { get; set; }
-        public int RenderX { get; set; }
-        public int RenderY { get; set; }
+        public TDPoint Point { get; set; }
 
         public int Size { get; set; }
 
-        public VPoint(int x, int y, int z, int size, Color cl)
+        public VPoint(Camera camera, int x, int y, int z, int size, Color cl)
         {
-            RenderX = x - size / 2;
-            RenderY = y - size / 2;
-            X = x;
-            Y = y;
-            Z = z;
+            Point = new TDPoint(camera, x, y, z);
             Size = size;
             Color = cl;
+            this.ChangeProjection(camera);
         }
 
         public void ChangeProjection(Camera camera)
@@ -37,13 +30,13 @@ namespace GraphicsEditor.Modules.Elements
 
         public override string ToString()
         {
-            return $"VPoint ({X};{Y};{Z}) [{Size}]";
+            return $"VPoint ({Point.X};{Point.Y};{Point.Z}) [{Size}]";
         }
 
         public override bool Equals(object? obj)
         {
-            return obj is VPoint pt && this.X == pt.X && this.Y == pt.Y && this.Z == pt.Z
-                && this.Color == pt.Color;
+            return obj is VPoint pt && this.Point.Equals(pt.Point)
+                && this.Color == pt.Color && this.Size == pt.Size;
         }
     }
 }

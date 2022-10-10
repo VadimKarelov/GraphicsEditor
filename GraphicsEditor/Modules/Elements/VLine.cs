@@ -12,35 +12,20 @@ namespace GraphicsEditor.Modules.Elements
     {
         public Color Color { get; set; }
 
-        public int X1 { get; set; }
-        public int Y1 { get; set; }
-        public int Z1 { get; set; }
-        public int X2 { get; set; }
-        public int Y2 { get; set; }
-        public int Z2 { get; set; }
+        public TDPoint Point1 { get; set; }
+        public TDPoint Point2 { get; set; }
 
         public int Size { get; set; }
 
-        public int RenderX1 { get; set; }
-        public int RenderY1 { get; set; }
-        public int RenderX2 { get; set; }
-        public int RenderY2 { get; set; }
-
-        public VLine(Color color, int x1, int y1, int z1, int x2, int y2, int z2, int size)
+        public VLine(Camera camera, int x1, int y1, int z1, int x2, int y2, int z2, int size, Color color)
         {
-            Color = color;
-            X1 = x1;
-            Y1 = y1;
-            Z1 = z1;
-            X2 = x2;
-            Y2 = y2;
-            Z2 = z2;
-            Size = size;
+            Point1 = new TDPoint(camera, x1, y1, z1);
+            Point2 = new TDPoint(camera, x2, y2, z2);
 
-            RenderX1 = x1;
-            RenderY1 = y1;
-            RenderX2 = x2;
-            RenderY2 = y2;
+            Size = size;
+            Color = color;
+
+            this.ChangeProjection(camera);
         }
 
         public void ChangeProjection(Camera camera)
@@ -50,14 +35,14 @@ namespace GraphicsEditor.Modules.Elements
 
         public override string ToString()
         {
-            return $"VLine ({X1};{Y1};{Z1})-({X2};{Y2};{Z2}) [{Size}]";
+            return $"VLine ({Point1.X};{Point1.Y};{Point1.Z})-" +
+                $"({Point2.X};{Point2.Y};{Point2.Z}) [{Size}]";
         }
 
         public override bool Equals(object? obj)
         {
-            return obj is VLine pt && this.X1 == pt.X1 && this.Y1 == pt.Y1 && this.Z1 == pt.Z1
-                && this.X2 == pt.X2 && this.Y2 == pt.Y2 && this.Z2 == pt.Z2
-                && this.Color == pt.Color;
+            return obj is VLine ln && Point1.Equals(ln.Point1) && Point2.Equals(ln.Point2)
+                && this.Color == ln.Color && this.Size == ln.Size;
         }
     }
 }

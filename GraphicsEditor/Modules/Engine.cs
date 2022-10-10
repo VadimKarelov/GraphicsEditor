@@ -95,7 +95,7 @@ namespace GraphicsEditor.Modules
                 {
                     if (cpEl[i] is VPoint pt)
                     {
-                        if (Math.Abs(pt.RenderX - x) <= eps && Math.Abs(pt.RenderY - y) <= eps)
+                        if (Math.Abs(pt.Point.RenderX - x) <= eps && Math.Abs(pt.Point.RenderY - y) <= eps)
                         {
                             toRemove.Add(pt);
                         }
@@ -124,7 +124,7 @@ namespace GraphicsEditor.Modules
             {
                 lock (_elements)
                 {
-                    _elements.Add(new VPoint(x, y, z, size, cl));
+                    _elements.Add(new VPoint(_camera, x, y, z, size, cl));
                 }
             });
         }
@@ -146,7 +146,7 @@ namespace GraphicsEditor.Modules
             {
                 lock (_elements)
                 {
-                    _elements.Add(new VLine(cl, x1, y1, z1, x2, y2, z2, size));
+                    _elements.Add(new VLine(_camera, x1, y1, z1, x2, y2, z2, size, cl));
                 }
             });
         }
@@ -272,11 +272,11 @@ namespace GraphicsEditor.Modules
             {
                 if (el is VPoint pt)
                 {
-                    gr.FillEllipse(new SolidBrush(pt.Color), pt.RenderX, pt.RenderY, pt.Size, pt.Size);
+                    gr.FillEllipse(new SolidBrush(pt.Color), pt.Point.RenderX, pt.Point.RenderY, pt.Size, pt.Size);
                 }
                 else if (el is VLine ln)
                 {
-                    gr.DrawLine(new System.Drawing.Pen(ln.Color, ln.Size), ln.RenderX1, ln.RenderY1, ln.RenderX2, ln.RenderY2);
+                    gr.DrawLine(new System.Drawing.Pen(ln.Color, ln.Size), ln.Point1.RenderX, ln.Point1.RenderY, ln.Point2.RenderX, ln.Point2.RenderY);
                 }
             }
 
@@ -354,28 +354,29 @@ namespace GraphicsEditor.Modules
 
         private bool IsPointOnLine(int x, int y, VLine ln)
         {
-            double tmpX = 0, tmpY = 0;
-            if (ln.RenderX2 - ln.RenderX1 == 0)
-            {
-                tmpX = ln.RenderX2;
-            }
-            else
-            {
-                tmpX = ln.RenderX2 - ln.RenderX1;
-            }
-            if (ln.RenderY2 -ln.RenderY1 == 0)
-            {
-                tmpY = ln.RenderY2;
-            }
-            else
-            {
-                tmpY = ln.RenderY2 - ln.RenderY1;
-            }
-            if (Math.Abs((x - ln.RenderX1) / tmpX - (y - ln.RenderY1) / tmpY) <= 0.05)
-            {
-                return true;
-            }
             return false;
+            //double tmpX = 0, tmpY = 0;
+            //if (ln.RenderX2 - ln.RenderX1 == 0)
+            //{
+            //    tmpX = ln.RenderX2;
+            //}
+            //else
+            //{
+            //    tmpX = ln.RenderX2 - ln.RenderX1;
+            //}
+            //if (ln.RenderY2 -ln.RenderY1 == 0)
+            //{
+            //    tmpY = ln.RenderY2;
+            //}
+            //else
+            //{
+            //    tmpY = ln.RenderY2 - ln.RenderY1;
+            //}
+            //if (Math.Abs((x - ln.RenderX1) / tmpX - (y - ln.RenderY1) / tmpY) <= 0.05)
+            //{
+            //    return true;
+            //}
+            //return false;
         }
     }
 }

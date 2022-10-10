@@ -185,7 +185,7 @@ namespace GraphicsEditor
                     case Plane.XZ: x = (int)pos.X; z = (int)pos.Y; break;
                     case Plane.YZ: y = (int)pos.X; z = (int)pos.Y; break;                    
                 }
-                VPoint pt = new(x, y, z, size, _selectedColor);
+                VPoint pt = new(_engine.Camera, x, y, z, size, _selectedColor);
                 _engine.AddPointAsync(pt);
             });
         }
@@ -199,7 +199,7 @@ namespace GraphicsEditor
                 case Plane.XZ: x = (int)pos.X; z = (int)pos.Y; break;
                 case Plane.YZ: y = (int)pos.X; z = (int)pos.Y; break;
             }
-            VLine ln = new(_selectedColor, x, y, z, x, y, z, (int)sl_Size.Value);
+            VLine ln = new(_engine.Camera, x, y, z, x, y, z, (int)sl_Size.Value, _selectedColor);
             _engine.AddLineAsync(ln);
             return ln;
         }
@@ -213,9 +213,9 @@ namespace GraphicsEditor
                 case Plane.XZ: x = (int)pos.X; z = (int)pos.Y; break;
                 case Plane.YZ: y = (int)pos.X; z = (int)pos.Y; break;
             }
-            line.X2 = x;
-            line.Y2 = y;
-            line.Z2 = z;
+            line.Point2.X = x;
+            line.Point2.Y = y;
+            line.Point2.Z = z;
         }
         #endregion
 

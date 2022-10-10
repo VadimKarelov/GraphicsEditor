@@ -16,7 +16,7 @@ namespace GraphicsEditor.Modules
             Plane = ProjectionPlane.XY;
         }
 
-        public void ChangeProjection(IElement element)
+        public void ChangeProjection(object element)
         {
             switch (this.Plane)
             {
@@ -27,51 +27,66 @@ namespace GraphicsEditor.Modules
             }
         }
 
-        private void ProjectionXY(IElement element)
+        private void ProjectionXY(object element)
         {
-            if (element is VPoint pt)
+            if (element is TDPoint tpt)
             {
-                pt.RenderX = pt.X - pt.Size / 2;
-                pt.RenderY = pt.Y - pt.Size / 2;
+                tpt.RenderX = tpt.X;
+                tpt.RenderY = tpt.Y;
+            }
+            else if (element is VPoint pt)
+            {
+                pt.Point.RenderX = pt.Point.X - pt.Size / 2;
+                pt.Point.RenderY = pt.Point.Y - pt.Size / 2;
             }
             else if (element is VLine ln)
             {
-                ln.RenderX1 = ln.X1;
-                ln.RenderX2 = ln.X2;
-                ln.RenderY1 = ln.Y1;
-                ln.RenderY2 = ln.Y2;
+                ln.Point1.RenderX = ln.Point1.X;
+                ln.Point2.RenderX = ln.Point2.X;
+                ln.Point1.RenderY = ln.Point1.Y;
+                ln.Point2.RenderY = ln.Point2.Y;
             }
         }
 
-        private void ProjectionXZ(IElement element)
+        private void ProjectionXZ(object element)
         {
-            if (element is VPoint pt)
+            if (element is TDPoint tpt)
             {
-                pt.RenderX = pt.X - pt.Size / 2;
-                pt.RenderY = pt.Z - pt.Size / 2;
+                tpt.RenderX = tpt.X;
+                tpt.RenderY = tpt.Z;
+            }
+            else if (element is VPoint pt)
+            {
+                pt.Point.RenderX = pt.Point.X - pt.Size / 2;
+                pt.Point.RenderY = pt.Point.Z - pt.Size / 2;
             }
             else if (element is VLine ln)
             {
-                ln.RenderX1 = ln.X1;
-                ln.RenderX2 = ln.X2;
-                ln.RenderY1 = ln.Z1;
-                ln.RenderY2 = ln.Z2;
+                ln.Point1.RenderX = ln.Point1.X;
+                ln.Point2.RenderX = ln.Point2.X;
+                ln.Point1.RenderY = ln.Point1.Z;
+                ln.Point2.RenderY = ln.Point2.Z;
             }
         }
 
-        private void ProjectionYZ(IElement element)
+        private void ProjectionYZ(object element)
         {
-            if (element is VPoint pt)
+            if (element is TDPoint tpt)
             {
-                pt.RenderX = pt.Y - pt.Size / 2;
-                pt.RenderY = pt.Z - pt.Size / 2;
+                tpt.RenderX = tpt.Y;
+                tpt.RenderY = tpt.Z;
+            }
+            else if (element is VPoint pt)
+            {
+                pt.Point.RenderX = pt.Point.Y - pt.Size / 2;
+                pt.Point.RenderY = pt.Point.Z - pt.Size / 2;
             }
             else if (element is VLine ln)
             {
-                ln.RenderX1 = ln.Y1;
-                ln.RenderX2 = ln.Y2;
-                ln.RenderY1 = ln.Z1;
-                ln.RenderY2 = ln.Z2;
+                ln.Point1.RenderX = ln.Point1.Y;
+                ln.Point2.RenderX = ln.Point2.Y;
+                ln.Point1.RenderY = ln.Point1.Z;
+                ln.Point2.RenderY = ln.Point2.Z;
             }
         }
     }
