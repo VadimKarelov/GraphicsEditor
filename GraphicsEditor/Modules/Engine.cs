@@ -38,13 +38,17 @@ namespace GraphicsEditor.Modules
         private int _height;
         private object _sizeLocker;
 
-        private bool _isCameraChanged;
+        private int _renderCounter;
+        private bool _isRenderRequired;
+        private object _renderCounterLocker;
 
         public Engine(int width, int height)
         {
             _width = width;
             _height = height;
             _sizeLocker = new object();
+
+            _renderCounterLocker = new();
 
             _bitmapImg = new BitmapImage();
 
@@ -71,8 +75,9 @@ namespace GraphicsEditor.Modules
                 lock (_camera)
                 {
                     _camera.Plane = plane;
-                    _isCameraChanged = true;
                 }
+                ComputeRenderParameters();
+                SendSignalToRender();
             });
         }
         #endregion
@@ -116,8 +121,11 @@ namespace GraphicsEditor.Modules
                         _elements.Remove(item);
                     }
                 }
+
+                SendSignalToRender();
             });
         }
+
         public async void AddPointAsync(int x, int y, int z, int size, Color cl)
         {
             await Task.Run(() =>
@@ -126,6 +134,7 @@ namespace GraphicsEditor.Modules
                 {
                     _elements.Add(new VPoint(_camera, x, y, z, size, cl));
                 }
+                SendSignalToRender();
             });
         }
 
@@ -137,6 +146,7 @@ namespace GraphicsEditor.Modules
                 {
                     _elements.Add(point);
                 }
+                SendSignalToRender();
             });
         }
 
@@ -148,6 +158,7 @@ namespace GraphicsEditor.Modules
                 {
                     _elements.Add(new VLine(_camera, x1, y1, z1, x2, y2, z2, size, cl));
                 }
+                SendSignalToRender();
             });
         }
 
@@ -159,6 +170,7 @@ namespace GraphicsEditor.Modules
                 {
                     _elements.Add(line);
                 }
+                SendSignalToRender();
             });
         }
         #endregion
@@ -166,16 +178,51 @@ namespace GraphicsEditor.Modules
         #region async render and background processes
         public async void InitAsyncRender()
         {
-            while (true)
+            await Task.Run(() =>
             {
-                await Task.Run(() =>
+                SendSignalToRender();
+
+                while (true)
                 {
+                    /*
                     Render();
                     UpdateElementsList();
                     Optimization();
                     //Task.Delay(10);
                     Thread.Sleep(10);
-                });
+                    */
+
+                    if (_isRenderRequired && _renderCounter >= 20)
+                    {
+                        lock (_renderCounterLocker)
+                        {
+                            _isRenderRequired = false;
+                            _renderCounter = 0;
+                        }
+
+                        Render();
+                        UpdateElementsList();
+                    }
+                    else if (_renderCounter % 1000 == 0)
+                    {
+                        Optimization();
+                    }
+
+                    Thread.Sleep(10);
+
+                    lock (_renderCounterLocker)
+                    {
+                        _renderCounter += 10;
+                    }
+                }
+            });
+        }
+
+        private void SendSignalToRender()
+        {
+            lock (_renderCounterLocker)
+            {
+                _isRenderRequired = true;
             }
         }
 
@@ -244,13 +291,15 @@ namespace GraphicsEditor.Modules
                         _elements.Remove(item);
                     }
                 }
+
+                SendSignalToRender();
             });
         }
         #endregion
 
         private void Render()
         {
-            ComputeRenderParameters();
+            //ComputeRenderParameters();
 
             Bitmap btmp;
             lock (_sizeLocker)
@@ -308,8 +357,9 @@ namespace GraphicsEditor.Modules
                         });
                     }
                 }
+
+                SendSignalToRender();
             });
-            _isCameraChanged = false;
         }
 
         private void ComputeRenderParameters()
@@ -332,6 +382,8 @@ namespace GraphicsEditor.Modules
                     }
                 });
             }
+
+            SendSignalToRender();
         }
 
         private BitmapImage ToBitmapImage(Bitmap bitmap)
