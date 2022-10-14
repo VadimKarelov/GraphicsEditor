@@ -15,17 +15,21 @@ namespace GraphicsEditor.Modules.Elements
 
         public int Size { get; set; }
 
+        private Camera _camera;
+
         public VPoint(Camera camera, int x, int y, int z, int size, Color cl)
         {
             Point = new TDPoint(camera, x, y, z);
             Size = size;
             Color = cl;
-            this.ChangeProjection(camera);
+            _camera = camera;
+
+            this.ChangeProjection();
         }
 
-        public void ChangeProjection(Camera camera)
+        public void ChangeProjection()
         {
-            camera.ChangeProjection(this);
+            _camera.ChangeProjection(this);
         }
 
         public override string ToString()

@@ -11,24 +11,33 @@ namespace GraphicsEditor.Modules.Elements
     /// </summary>
     internal class TDPoint
     {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int Z { get; set; }
+        public int X { get { return _x; } set { _x = value; this.ChangeProjection(); } }
+        public int Y { get { return _y; } set { _y = value; this.ChangeProjection(); } }
+        public int Z { get { return _z; } set { _z = value; this.ChangeProjection(); } }
 
         public int RenderX { get; set; }
         public int RenderY { get; set; }
 
+        private Camera _camera;
+
+        private int _x;
+        private int _y;
+        private int _z;
+
         public TDPoint(Camera camera, int x, int y, int z)
         {
-            X = x;
-            Y = y;
-            Z = z;
-            this.ChangeProjection(camera);
+            _x = x;
+            _y = y;
+            _z = z;
+
+            _camera = camera;
+
+            this.ChangeProjection();
         }
 
-        public void ChangeProjection(Camera camera)
+        public void ChangeProjection()
         {
-            camera.ChangeProjection(this);
+            _camera.ChangeProjection(this);
         }
 
         public override bool Equals(object? obj)

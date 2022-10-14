@@ -12,7 +12,7 @@ namespace GraphicsEditor.Modules.Elements
     {
         public Color Color { get; set; }
 
-        public void ChangeProjection(Camera camera);
+        public void ChangeProjection();
 
         public string ToString();
 

@@ -17,6 +17,8 @@ namespace GraphicsEditor.Modules.Elements
 
         public int Size { get; set; }
 
+        private Camera _camera;
+
         public VLine(Camera camera, int x1, int y1, int z1, int x2, int y2, int z2, int size, Color color)
         {
             Point1 = new TDPoint(camera, x1, y1, z1);
@@ -25,12 +27,22 @@ namespace GraphicsEditor.Modules.Elements
             Size = size;
             Color = color;
 
-            this.ChangeProjection(camera);
+            _camera = camera;
+
+            this.ChangeProjection();
         }
 
-        public void ChangeProjection(Camera camera)
+        public void ChangeProjection()
         {
-            camera.ChangeProjection(this);
+            _camera.ChangeProjection(this);
+        }
+
+        public void SetNewPoint(TDPoint p1, TDPoint p2)
+        {
+            Point1 = p1;
+            Point2 = p2;
+
+            this.ChangeProjection();
         }
 
         public override string ToString()

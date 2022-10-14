@@ -41,10 +41,15 @@ namespace GraphicsEditor.Modules
             }
             else if (element is VLine ln)
             {
+                ln.Point1.ChangeProjection();
+                ln.Point2.ChangeProjection();
+
+                /*
                 ln.Point1.RenderX = ln.Point1.X;
                 ln.Point2.RenderX = ln.Point2.X;
                 ln.Point1.RenderY = ln.Point1.Y;
                 ln.Point2.RenderY = ln.Point2.Y;
+                */
             }
         }
 
@@ -62,10 +67,15 @@ namespace GraphicsEditor.Modules
             }
             else if (element is VLine ln)
             {
+                ln.Point1.ChangeProjection();
+                ln.Point2.ChangeProjection();
+
+                /*
                 ln.Point1.RenderX = ln.Point1.X;
                 ln.Point2.RenderX = ln.Point2.X;
                 ln.Point1.RenderY = ln.Point1.Z;
                 ln.Point2.RenderY = ln.Point2.Z;
+                */
             }
         }
 
@@ -83,10 +93,15 @@ namespace GraphicsEditor.Modules
             }
             else if (element is VLine ln)
             {
+                ln.Point1.ChangeProjection();
+                ln.Point2.ChangeProjection();
+
+                /*
                 ln.Point1.RenderX = ln.Point1.Y;
                 ln.Point2.RenderX = ln.Point2.Y;
                 ln.Point1.RenderY = ln.Point1.Z;
                 ln.Point2.RenderY = ln.Point2.Z;
+                */
             }
         }
     }

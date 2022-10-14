@@ -36,7 +36,7 @@ namespace GraphicsEditor
         private Engine _engine;
         private DispatcherTimer _renderTimer;
 
-        private IElement? _editingElement;
+        //private IElement? _editingElement;
 
         #region initialization
         public MainWindow()
@@ -97,7 +97,7 @@ namespace GraphicsEditor
                 case Instrument.Line:
                     {
                         VLine line = AddLine(pos);
-                        _editingElement = line;
+                        _engine.EditingElement = line;
                         break;
                     }
                 case Instrument.Eraser:
@@ -125,7 +125,7 @@ namespace GraphicsEditor
                     }
                 case Instrument.Line:
                     {
-                        if (_editingElement != null && _editingElement is VLine ln)
+                        if (_engine.EditingElement != null && _engine.EditingElement is VLine ln)
                         {
                             ChangeLineCoords(ln, pos);
                         }
@@ -154,10 +154,10 @@ namespace GraphicsEditor
                     }
                 case Instrument.Line:
                     {
-                        if (_editingElement != null && _editingElement is VLine ln)
+                        if (_engine.EditingElement != null && _engine.EditingElement is VLine ln)
                         {
                             ChangeLineCoords(ln, pos);
-                            _editingElement = null;
+                            _engine.EditingElement = null;
                         }
                         break;
                     }

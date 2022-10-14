@@ -25,6 +25,7 @@ namespace GraphicsEditor.Modules
         public List<string> StringElements => _stringElements;
         public BitmapImage BitmapImage => _bitmapImg;
         public Camera Camera => _camera;
+        public IElement? EditingElement { get; set; }
 
         private List<IElement> _elements = new List<IElement>();
 
@@ -192,7 +193,7 @@ namespace GraphicsEditor.Modules
                     Thread.Sleep(10);
                     */
 
-                    if (_isRenderRequired && _renderCounter >= 20)
+                    if (_renderCounter >= 20 && (_isRenderRequired || EditingElement != null))
                     {
                         lock (_renderCounterLocker)
                         {
@@ -208,11 +209,11 @@ namespace GraphicsEditor.Modules
                         Optimization();
                     }
 
-                    Thread.Sleep(10);
+                    Thread.Sleep(20);
 
                     lock (_renderCounterLocker)
                     {
-                        _renderCounter += 10;
+                        _renderCounter += 20;
                     }
                 }
             });
@@ -351,7 +352,7 @@ namespace GraphicsEditor.Modules
                             {
                                 lock (_camera)
                                 {
-                                    el.ChangeProjection(_camera);
+                                    el.ChangeProjection();
                                 }
                             }                            
                         });
@@ -378,7 +379,7 @@ namespace GraphicsEditor.Modules
                 {
                     lock (elem)
                     {
-                        elem.ChangeProjection(_camera);
+                        elem.ChangeProjection();
                     }
                 });
             }
