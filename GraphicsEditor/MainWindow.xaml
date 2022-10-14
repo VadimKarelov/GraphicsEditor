@@ -111,7 +111,7 @@
                         <Button Grid.Row="3" Grid.Column="2" Content=" ... " Margin="2,2,2,2"/>
                     </Grid>
 
-                    <ListBox Grid.Row="5" x:Name="lb_elements"/>
+                    <ListBox Grid.Row="5" x:Name="lb_elements" Width="220"/>
                 </Grid>
             </Border>
 

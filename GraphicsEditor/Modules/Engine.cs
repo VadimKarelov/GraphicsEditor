@@ -60,6 +60,7 @@ namespace GraphicsEditor.Modules
                     _width = width;
                     _height = height;
                 }
+                SendSignalToRender();
             });
         }
 
@@ -167,7 +168,7 @@ namespace GraphicsEditor.Modules
                         Render();
                         UpdateElementsList();
                     }
-                    else if (_renderCounter % 1000 == 0)
+                    else if (_renderCounter % 5000 == 0)
                     {
                         Optimization();
                     }
@@ -237,13 +238,16 @@ namespace GraphicsEditor.Modules
                     cpEl = new List<IElement>(_elements);
                 }
 
-                for (int i = cpEl.Count - 1; i > 0; i--)
+                for (int i = cpEl.Count - 1; i >= 0; i--)
                 {
-                    for (int j = i - 1; j >= 0; j--)
-                    {                        
-                        if (cpEl[i].Equals(cpEl[j]))
+                    if (i > 0)
+                    {
+                        for (int j = i - 1; j >= 0; j--)
                         {
-                            toRemove.Add(cpEl[j]);
+                            if (cpEl[i].Equals(cpEl[j]))
+                            {
+                                toRemove.Add(cpEl[j]);
+                            }
                         }
                     }
                     if (cpEl[i] is VCurve cl)
@@ -254,6 +258,7 @@ namespace GraphicsEditor.Modules
                         }
                         else
                         {
+                            bool changed = false;
                             for (int j = cl.Points.Count - 1; j > 0; j--)
                             {
                                 if (cl.Points[j].Equals(cl.Points[j - 1]))
@@ -262,8 +267,29 @@ namespace GraphicsEditor.Modules
                                     {
                                         cl.Points.RemoveAt(j);
                                     }
+                                    changed = true;
                                 }
+                                // 5 or more elements
+                                /*
+                                else if (j >= 4)
+                                {
+                                    if (cl.Points[j].X == cl.Points[j - 1].X && cl.Points[j].X == cl.Points[j - 2].X 
+                                    && cl.Points[j].X == cl.Points[j - 3].X && cl.Points[j].X == cl.Points[j - 4].X)
+                                    {
+                                        cl.Points.RemoveAt(j - 2);
+                                        changed = true;
+                                    }
+                                    else if (cl.Points[j].Y == cl.Points[j - 1].Y && cl.Points[j].Y == cl.Points[j - 2].Y
+                                    && cl.Points[j].Y == cl.Points[j - 3].Y && cl.Points[j].Y == cl.Points[j - 4].Y)
+                                    {
+                                        cl.Points.RemoveAt(j - 2);
+                                        changed = true;
+                                    }                                    
+                                }
+                                */
                             }
+                            if (changed)
+                                cl.ChangeProjection();
                         }
                     }
                 }
