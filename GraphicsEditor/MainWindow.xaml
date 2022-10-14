@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GraphicsEditor"
         mc:Ignorable="d"
-        Title="Paint 15:28" Style="{StaticResource defaultWindow}" SizeChanged="Window_SizeChanged">
+        Title="Paint 15:28" Style="{StaticResource defaultWindow}">
     <Window.Resources>
         <Style TargetType="Button" BasedOn="{StaticResource defaultButton}">
             <Setter Property="Margin" Value="2"/>
@@ -116,7 +116,7 @@
             </Border>
 
             <Image Grid.Column="1" x:Name="field" Cursor="Pen" MouseMove="Canvas_MouseMove" MouseDown="Canvas_MouseDown" MouseUp="Canvas_MouseUp"/>
-            <Button Grid.Column="1" x:Name="uou" Visibility="Hidden"/>
+            <Button Grid.Column="1" x:Name="uou" Visibility="Hidden" SizeChanged="Window_SizeChanged"/>
         </Grid>
 
         <StatusBar Grid.Row="2">

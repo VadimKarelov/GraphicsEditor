@@ -34,7 +34,10 @@ namespace GraphicsEditor.Modules.Elements
 
         public void ChangeProjection()
         {
-            _camera.ChangeProjection(this);
+            //_camera.ChangeProjection(this);
+
+            Point1.ChangeProjection();
+            Point2.ChangeProjection();
         }
 
         public void SetNewPoint(TDPoint p1, TDPoint p2)

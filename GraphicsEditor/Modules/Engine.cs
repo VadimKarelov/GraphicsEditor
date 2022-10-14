@@ -16,6 +16,8 @@ using System.Security.Policy;
 using System.Runtime.CompilerServices;
 using System.Windows.Media.Media3D;
 using System.Threading;
+using Point = System.Drawing.Point;
+using System.Windows.Shapes;
 
 namespace GraphicsEditor.Modules
 {
@@ -127,49 +129,73 @@ namespace GraphicsEditor.Modules
             });
         }
 
-        public async void AddPointAsync(int x, int y, int z, int size, Color cl)
-        {
-            await Task.Run(() =>
-            {
-                lock (_elements)
-                {
-                    _elements.Add(new VPoint(_camera, x, y, z, size, cl));
-                }
-                SendSignalToRender();
-            });
-        }
+        //public async void AddPointAsync(int x, int y, int z, int size, Color cl)
+        //{
+        //    await Task.Run(() =>
+        //    {
+        //        lock (_elements)
+        //        {
+        //            _elements.Add(new VPoint(_camera, x, y, z, size, cl));
+        //        }
+        //        SendSignalToRender();
+        //    });
+        //}
 
-        public async void AddPointAsync(VPoint point)
-        {
-            await Task.Run(() =>
-            {
-                lock (_elements)
-                {
-                    _elements.Add(point);
-                }
-                SendSignalToRender();
-            });
-        }
+        //public async void AddPointAsync(VPoint point)
+        //{
+        //    await Task.Run(() =>
+        //    {
+        //        lock (_elements)
+        //        {
+        //            _elements.Add(point);
+        //        }
+        //        SendSignalToRender();
+        //    });
+        //}
 
-        public async void AddLineAsync(int x1, int y1, int z1, int x2, int y2, int z2, int size, Color cl)
-        {
-            await Task.Run(() =>
-            {
-                lock (_elements)
-                {
-                    _elements.Add(new VLine(_camera, x1, y1, z1, x2, y2, z2, size, cl));
-                }
-                SendSignalToRender();
-            });
-        }
+        //public async void AddLineAsync(int x1, int y1, int z1, int x2, int y2, int z2, int size, Color cl)
+        //{
+        //    await Task.Run(() =>
+        //    {
+        //        lock (_elements)
+        //        {
+        //            _elements.Add(new VLine(_camera, x1, y1, z1, x2, y2, z2, size, cl));
+        //        }
+        //        SendSignalToRender();
+        //    });
+        //}
 
-        public async void AddLineAsync(VLine line)
+        //public async void AddLineAsync(VLine line)
+        //{
+        //    await Task.Run(() =>
+        //    {
+        //        lock (_elements)
+        //        {
+        //            _elements.Add(line);
+        //        }
+        //        SendSignalToRender();
+        //    });
+        //}
+
+        //public async void AddCurveLineAsync(VCurve curveLine)
+        //{
+        //    await Task.Run(() =>
+        //    {
+        //        lock (_elements)
+        //        {
+        //            _elements.Add(curveLine);
+        //        }
+        //        SendSignalToRender();
+        //    });
+        //}
+
+        public async void AddElementAsync(IElement element)
         {
             await Task.Run(() =>
             {
                 lock (_elements)
                 {
-                    _elements.Add(line);
+                    _elements.Add(element);
                 }
                 SendSignalToRender();
             });
@@ -278,7 +304,11 @@ namespace GraphicsEditor.Modules
                 {
                     for (int j = i - 1; j >= 0; j--)
                     {
-                        if (cpEl[i].Equals(cpEl[j]))
+                        if (cpEl[j] is VCurve cl && !cl.Points.Any())
+                        {
+                            toRemove.Add(cpEl[j]);
+                        }
+                        else if (cpEl[i].Equals(cpEl[j]))
                         {
                             toRemove.Add(cpEl[j]);
                         }
@@ -327,6 +357,11 @@ namespace GraphicsEditor.Modules
                 else if (el is VLine ln)
                 {
                     gr.DrawLine(new System.Drawing.Pen(ln.Color, ln.Size), ln.Point1.RenderX, ln.Point1.RenderY, ln.Point2.RenderX, ln.Point2.RenderY);
+                }
+                else if (el is VCurve cl && cl.Points.Count > 1)
+                {
+                    Point[] pts = cl.Points.Select(p => new Point(p.RenderX, p.RenderY)).ToArray();
+                    gr.DrawCurve(new System.Drawing.Pen(cl.Color, cl.Size), pts);
                 }
             }
 
