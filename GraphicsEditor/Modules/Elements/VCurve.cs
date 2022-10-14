@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace GraphicsEditor.Modules.Elements
 {
@@ -8,6 +9,7 @@ namespace GraphicsEditor.Modules.Elements
         public Color Color { get; set; }
 
         public List<TDPoint> Points { get; set; }
+        public Point[] RenderPoints { get; set; }
 
         public int Size { get; set; }
 
@@ -16,21 +18,38 @@ namespace GraphicsEditor.Modules.Elements
         public VCurve(Camera camera, int size, Color color)
         {
             Points = new();
+            RenderPoints = new Point[0];
             _camera = camera;
             Size = size;
             Color = color;
+
+            this.ChangeProjection();
+        }
+
+        public void AddPoint(TDPoint pt)
+        {
+            lock (this.Points)
+            {
+                Points.Add(pt);
+            }
+            lock (this.RenderPoints)
+            {
+                RenderPoints = Points.Select(x => new Point(x.RenderX, x.RenderY)).ToArray();
+            }
         }
 
         public void ChangeProjection()
         {
-            //_camera.ChangeProjection(this);
-
             lock (this.Points)
             {
                 foreach (TDPoint pt in Points)
                 {
                     pt.ChangeProjection();
                 }
+            }
+            lock (this.RenderPoints)
+            {
+                RenderPoints = Points.Select(x => new Point(x.RenderX, x.RenderY)).ToArray();
             }
         }
 

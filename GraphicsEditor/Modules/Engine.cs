@@ -4,20 +4,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Interop;
-using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Drawing.Imaging;
-using System.Windows.Media;
 using Color = System.Drawing.Color;
-using System.Security.Policy;
-using System.Runtime.CompilerServices;
-using System.Windows.Media.Media3D;
 using System.Threading;
 using Point = System.Drawing.Point;
-using System.Windows.Shapes;
 
 namespace GraphicsEditor.Modules
 {
@@ -113,6 +105,19 @@ namespace GraphicsEditor.Modules
                         if (IsPointOnLine(x, y, ln))
                         {
                             toRemove.Add(ln);
+                        }
+                    }
+                    else if (cpEl[i] is VCurve cl)
+                    {
+                        for (int j = cl.Points.Count - 1; j > 0; j--)
+                        {
+                            if (cl.Points[j].Equals(cl.Points[j - 1]))
+                            {
+                                lock (cl)
+                                {
+                                    cl.Points.RemoveAt(j);
+                                }
+                            }
                         }
                     }
                 }
@@ -288,10 +293,17 @@ namespace GraphicsEditor.Modules
                 {
                     gr.DrawLine(new System.Drawing.Pen(ln.Color, ln.Size), ln.Point1.RenderX, ln.Point1.RenderY, ln.Point2.RenderX, ln.Point2.RenderY);
                 }
-                else if (el is VCurve cl && cl.Points.Count > 1)
+                else if (el is VCurve cl)
                 {
-                    Point[] pts = cl.Points.Select(p => new Point(p.RenderX, p.RenderY)).ToArray();
-                    gr.DrawCurve(new System.Drawing.Pen(cl.Color, cl.Size), pts);
+                    Point[] pts = cl.RenderPoints;
+                    if (pts.Length == 1)
+                    {
+                        gr.FillEllipse(new SolidBrush(cl.Color), pts[0].X, pts[0].Y, cl.Size, cl.Size);
+                    }
+                    else if (pts.Length > 1)
+                    {
+                        gr.DrawCurve(new System.Drawing.Pen(cl.Color, cl.Size), pts);
+                    }
                 }
             }
 

@@ -1,23 +1,13 @@
 ﻿using GraphicsEditor.Modules;
 using GraphicsEditor.Modules.Elements;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Ink;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
-using Color = System.Drawing.Color;
 
 namespace GraphicsEditor
 {
@@ -35,8 +25,6 @@ namespace GraphicsEditor
 
         private Engine _engine;
         private DispatcherTimer _renderTimer;
-
-        //private IElement? _editingElement;
 
         #region initialization
         public MainWindow()
@@ -77,7 +65,7 @@ namespace GraphicsEditor
         private void UpdateField(object? sender, EventArgs e)
         {
             field.Source = _engine.BitmapImage;
-            lb_elements.ItemsSource = _engine.StringElements;
+            //lb_elements.ItemsSource = _engine.StringElements;
             status_ElementsNumber.Text = "Els: " + _engine.Elements.Count.ToString();
         }
         #endregion
@@ -91,7 +79,6 @@ namespace GraphicsEditor
             {
                 case Instrument.Pen:
                     {
-                        //AddPoint(pos, (int)sl_Size.Value);
                         VCurve cl = AddCurve(pos);
                         _engine.EditingElement = cl;
                         break;
@@ -122,7 +109,6 @@ namespace GraphicsEditor
                         if (e.LeftButton == MouseButtonState.Pressed &&
                             _engine.EditingElement != null && _engine.EditingElement is VCurve cl)
                         {
-                            //AddPoint(pos, (int)sl_Size.Value);
                             AddPointToCurve(cl, pos);
                         }
                         break;
@@ -191,7 +177,6 @@ namespace GraphicsEditor
                     case Plane.YZ: y = (int)pos.X; z = (int)pos.Y; break;                    
                 }
                 VPoint pt = new(_engine.Camera, x, y, z, size, _selectedColor);
-                //_engine.AddPointAsync(pt);
                 _engine.AddElementAsync(pt);
             });
         }
@@ -206,7 +191,6 @@ namespace GraphicsEditor
                 case Plane.YZ: y = (int)pos.X; z = (int)pos.Y; break;
             }
             VLine ln = new(_engine.Camera, x, y, z, x, y, z, (int)sl_Size.Value, _selectedColor);
-            //_engine.AddLineAsync(ln);
             _engine.AddElementAsync(ln);
             return ln;
         }
@@ -221,8 +205,7 @@ namespace GraphicsEditor
                 case Plane.YZ: y = (int)pos.X; z = (int)pos.Y; break;
             }
             VCurve cl = new(_engine.Camera, (int)sl_Size.Value, _selectedColor);
-            cl.Points.Add(new TDPoint(_engine.Camera, x, y, z));
-            //_engine.AddLineAsync(cl);
+            cl.AddPoint(new TDPoint(_engine.Camera, x, y, z));
             _engine.AddElementAsync(cl);
             return cl;
         }
@@ -253,7 +236,7 @@ namespace GraphicsEditor
             await Task.Run(() =>
             {
                 TDPoint pt = new(_engine.Camera, x, y, z);
-                cl.Points.Add(pt);
+                cl.AddPoint(pt);
             });            
         }
         #endregion
