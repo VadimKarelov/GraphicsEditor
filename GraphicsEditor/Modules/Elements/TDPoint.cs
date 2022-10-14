@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GraphicsEditor.Modules.Elements
+﻿namespace GraphicsEditor.Modules.Elements
 {
     /// <summary>
     /// Represents a 3D point

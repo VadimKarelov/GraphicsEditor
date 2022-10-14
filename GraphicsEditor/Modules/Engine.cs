@@ -129,66 +129,6 @@ namespace GraphicsEditor.Modules
             });
         }
 
-        //public async void AddPointAsync(int x, int y, int z, int size, Color cl)
-        //{
-        //    await Task.Run(() =>
-        //    {
-        //        lock (_elements)
-        //        {
-        //            _elements.Add(new VPoint(_camera, x, y, z, size, cl));
-        //        }
-        //        SendSignalToRender();
-        //    });
-        //}
-
-        //public async void AddPointAsync(VPoint point)
-        //{
-        //    await Task.Run(() =>
-        //    {
-        //        lock (_elements)
-        //        {
-        //            _elements.Add(point);
-        //        }
-        //        SendSignalToRender();
-        //    });
-        //}
-
-        //public async void AddLineAsync(int x1, int y1, int z1, int x2, int y2, int z2, int size, Color cl)
-        //{
-        //    await Task.Run(() =>
-        //    {
-        //        lock (_elements)
-        //        {
-        //            _elements.Add(new VLine(_camera, x1, y1, z1, x2, y2, z2, size, cl));
-        //        }
-        //        SendSignalToRender();
-        //    });
-        //}
-
-        //public async void AddLineAsync(VLine line)
-        //{
-        //    await Task.Run(() =>
-        //    {
-        //        lock (_elements)
-        //        {
-        //            _elements.Add(line);
-        //        }
-        //        SendSignalToRender();
-        //    });
-        //}
-
-        //public async void AddCurveLineAsync(VCurve curveLine)
-        //{
-        //    await Task.Run(() =>
-        //    {
-        //        lock (_elements)
-        //        {
-        //            _elements.Add(curveLine);
-        //        }
-        //        SendSignalToRender();
-        //    });
-        //}
-
         public async void AddElementAsync(IElement element)
         {
             await Task.Run(() =>
@@ -211,14 +151,6 @@ namespace GraphicsEditor.Modules
 
                 while (true)
                 {
-                    /*
-                    Render();
-                    UpdateElementsList();
-                    Optimization();
-                    //Task.Delay(10);
-                    Thread.Sleep(10);
-                    */
-
                     if (_renderCounter >= 20 && (_isRenderRequired || EditingElement != null))
                     {
                         lock (_renderCounterLocker)
@@ -330,8 +262,6 @@ namespace GraphicsEditor.Modules
 
         private void Render()
         {
-            //ComputeRenderParameters();
-
             Bitmap btmp;
             lock (_sizeLocker)
             {
@@ -443,28 +373,6 @@ namespace GraphicsEditor.Modules
         private bool IsPointOnLine(int x, int y, VLine ln)
         {
             return false;
-            //double tmpX = 0, tmpY = 0;
-            //if (ln.RenderX2 - ln.RenderX1 == 0)
-            //{
-            //    tmpX = ln.RenderX2;
-            //}
-            //else
-            //{
-            //    tmpX = ln.RenderX2 - ln.RenderX1;
-            //}
-            //if (ln.RenderY2 -ln.RenderY1 == 0)
-            //{
-            //    tmpY = ln.RenderY2;
-            //}
-            //else
-            //{
-            //    tmpY = ln.RenderY2 - ln.RenderY1;
-            //}
-            //if (Math.Abs((x - ln.RenderX1) / tmpX - (y - ln.RenderY1) / tmpY) <= 0.05)
-            //{
-            //    return true;
-            //}
-            //return false;
         }
     }
 }
