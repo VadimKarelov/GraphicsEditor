@@ -109,14 +109,14 @@ namespace GraphicsEditor.Modules
                     }
                     else if (cpEl[i] is VCurve cl)
                     {
-                        for (int j = cl.Points.Count - 1; j > 0; j--)
+                        bool found = false;
+                        Point[] pts = cl.RenderPoints;
+                        for (int j = 0; j < pts.Length && !found; j++)
                         {
-                            if (cl.Points[j].Equals(cl.Points[j - 1]))
+                            if (Math.Abs(pts[j].X - x) < 5 && Math.Abs(pts[j].Y - y) < 3)
                             {
-                                lock (cl)
-                                {
-                                    cl.Points.RemoveAt(j);
-                                }
+                                found = true;
+                                toRemove.Add(cl);
                             }
                         }
                     }
@@ -240,14 +240,30 @@ namespace GraphicsEditor.Modules
                 for (int i = cpEl.Count - 1; i > 0; i--)
                 {
                     for (int j = i - 1; j >= 0; j--)
-                    {
-                        if (cpEl[j] is VCurve cl && !cl.Points.Any())
+                    {                        
+                        if (cpEl[i].Equals(cpEl[j]))
                         {
                             toRemove.Add(cpEl[j]);
                         }
-                        else if (cpEl[i].Equals(cpEl[j]))
+                    }
+                    if (cpEl[i] is VCurve cl)
+                    {
+                        if (!cl.Points.Any())
                         {
-                            toRemove.Add(cpEl[j]);
+                            toRemove.Add(cpEl[i]);
+                        }
+                        else
+                        {
+                            for (int j = cl.Points.Count - 1; j > 0; j--)
+                            {
+                                if (cl.Points[j].Equals(cl.Points[j - 1]))
+                                {
+                                    lock (cl)
+                                    {
+                                        cl.Points.RemoveAt(j);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -384,7 +400,20 @@ namespace GraphicsEditor.Modules
 
         private bool IsPointOnLine(int x, int y, VLine ln)
         {
-            return false;
+            double eps = 10;
+
+            if (x + eps < Math.Min(ln.Point1.RenderX, ln.Point2.RenderX))
+                return false;
+            if (y + eps < Math.Min(ln.Point1.RenderY, ln.Point2.RenderY))
+                return false;
+
+            if (x - eps > Math.Max(ln.Point1.RenderX, ln.Point2.RenderX))
+                return false;
+            if (y - eps > Math.Max(ln.Point1.RenderY, ln.Point2.RenderY))
+                return false;
+
+            return (x - ln.Point1.RenderX) * (ln.Point2.RenderY - ln.Point1.RenderY) -
+                (y - ln.Point1.RenderY) * (ln.Point2.RenderX - ln.Point1.RenderX) <= eps;
         }
     }
 }
