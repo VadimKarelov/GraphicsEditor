@@ -10,6 +10,8 @@ using System.Drawing.Imaging;
 using Color = System.Drawing.Color;
 using System.Threading;
 using Point = System.Drawing.Point;
+using System.Windows.Media;
+using Pen = System.Drawing.Pen;
 
 namespace GraphicsEditor.Modules
 {
@@ -114,7 +116,7 @@ namespace GraphicsEditor.Modules
                         Point[] pts = cl.RenderPoints;
                         for (int j = 0; j < pts.Length && !found; j++)
                         {
-                            if (Math.Abs(pts[j].X - x) < 5 && Math.Abs(pts[j].Y - y) < 3)
+                            if (Math.Abs(pts[j].X - x) < 5 && Math.Abs(pts[j].Y - y) < 5)
                             {
                                 found = true;
                                 toRemove.Add(cl);
@@ -292,6 +294,13 @@ namespace GraphicsEditor.Modules
                                 cl.ChangeProjection();
                         }
                     }
+                    if (cpEl[i] is VLine ln)
+                    {
+                        if (ln.Point1.Equals(ln.Point2))
+                        {
+                            toRemove.Add(cpEl[i]);
+                        }
+                    }
                 }
 
                 lock (_elements)
@@ -307,6 +316,7 @@ namespace GraphicsEditor.Modules
         }
         #endregion
 
+        #region render
         private void Render()
         {
             Bitmap btmp;
@@ -333,7 +343,7 @@ namespace GraphicsEditor.Modules
                 }
                 else if (el is VLine ln)
                 {
-                    gr.DrawLine(new System.Drawing.Pen(ln.Color, ln.Size), ln.Point1.RenderX, ln.Point1.RenderY, ln.Point2.RenderX, ln.Point2.RenderY);
+                    gr.DrawLine(new Pen(ln.Color, ln.Size), ln.Point1.RenderX, ln.Point1.RenderY, ln.Point2.RenderX, ln.Point2.RenderY);
                 }
                 else if (el is VCurve cl)
                 {
@@ -344,7 +354,10 @@ namespace GraphicsEditor.Modules
                     }
                     else if (pts.Length > 1)
                     {
-                        gr.DrawCurve(new System.Drawing.Pen(cl.Color, cl.Size), pts);
+                        Pen pen = new Pen(cl.Color, cl.Size);
+                        pen.StartCap = System.Drawing.Drawing2D.LineCap.Round;
+                        pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+                        gr.DrawCurve(pen, pts);
                     }
                 }
             }
@@ -356,6 +369,25 @@ namespace GraphicsEditor.Modules
                 _bitmapImg = t;
             }
         }
+
+        private BitmapImage ToBitmapImage(Bitmap bitmap)
+        {
+            using (var memory = new MemoryStream())
+            {
+                bitmap.Save(memory, ImageFormat.Png);
+                memory.Position = 0;
+
+                var bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memory;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+                bitmapImage.Freeze();
+
+                return bitmapImage;
+            }
+        }
+        #endregion
 
         private async void ChangeCameraAsync()
         {
@@ -404,25 +436,7 @@ namespace GraphicsEditor.Modules
             }
 
             SendSignalToRender();
-        }
-
-        private BitmapImage ToBitmapImage(Bitmap bitmap)
-        {
-            using (var memory = new MemoryStream())
-            {
-                bitmap.Save(memory, ImageFormat.Png);
-                memory.Position = 0;
-
-                var bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = memory;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.EndInit();
-                bitmapImage.Freeze();
-
-                return bitmapImage;
-            }
-        }
+        }        
 
         private bool IsPointOnLine(int x, int y, VLine ln)
         {
