@@ -2,7 +2,7 @@
 
 namespace GraphicsEditor.Modules.Elements
 {
-    internal interface IElement
+    public interface IElement
     {
         public Color Color { get; set; }
 

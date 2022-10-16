@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a 3D point
     /// </summary>
-    internal class TDPoint
+    public class TDPoint
     {
         public int X { get { return _x; } set { _x = value; this.ChangeProjection(); } }
         public int Y { get { return _y; } set { _y = value; this.ChangeProjection(); } }

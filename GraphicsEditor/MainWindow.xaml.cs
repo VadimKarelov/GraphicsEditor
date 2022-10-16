@@ -149,6 +149,7 @@ namespace GraphicsEditor
                         {
                             ChangeLineCoords(ln, pos);
                             _engine.EditingElement = null;
+                            _engine.DelayRenderAsync(50);
                         }
                         break;
                     }

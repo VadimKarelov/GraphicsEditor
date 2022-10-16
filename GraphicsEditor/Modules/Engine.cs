@@ -201,6 +201,16 @@ namespace GraphicsEditor.Modules
             });
         }
 
+        public async void DelayRenderAsync(int milliseconds)
+        {
+            await Task.Run(() =>
+            {
+                Thread.Sleep(milliseconds);
+                //Render();
+                SendSignalToRender();
+            });
+        }
+
         private async void UpdateElementsList()
         {
             await Task.Run(() =>
@@ -260,6 +270,7 @@ namespace GraphicsEditor.Modules
                         }
                         else
                         {
+                            /*
                             bool changed = false;
                             for (int j = cl.Points.Count - 1; j > 0; j--)
                             {
@@ -272,7 +283,7 @@ namespace GraphicsEditor.Modules
                                     changed = true;
                                 }
                                 // 5 or more elements
-                                /*
+                                
                                 else if (j >= 4)
                                 {
                                     if (cl.Points[j].X == cl.Points[j - 1].X && cl.Points[j].X == cl.Points[j - 2].X 
@@ -288,10 +299,11 @@ namespace GraphicsEditor.Modules
                                         changed = true;
                                     }                                    
                                 }
-                                */
+                                //
                             }
                             if (changed)
                                 cl.ChangeProjection();
+                            */
                         }
                     }
                     if (cpEl[i] is VLine ln)

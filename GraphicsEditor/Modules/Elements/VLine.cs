@@ -2,7 +2,7 @@
 
 namespace GraphicsEditor.Modules.Elements
 {
-    internal class VLine : IElement
+    public class VLine : IElement
     {
         public Color Color { get; set; }
 

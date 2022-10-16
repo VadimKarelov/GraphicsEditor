@@ -3,7 +3,7 @@ using System;
 
 namespace GraphicsEditor.Modules
 {
-    internal class Camera
+    public class Camera
     {
         public ProjectionPlane Plane { get; set; }
 
@@ -66,7 +66,7 @@ namespace GraphicsEditor.Modules
         }
     }
 
-    enum ProjectionPlane
+    public enum ProjectionPlane
     {
         XY,
         XZ,
