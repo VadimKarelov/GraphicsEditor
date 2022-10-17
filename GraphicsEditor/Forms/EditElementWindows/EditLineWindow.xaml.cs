@@ -22,9 +22,14 @@ namespace GraphicsEditor.Forms.Styles.EditElementWindows
     {
         public VLine? ResultLine { get; set; }
 
+        private Brush tbBackground;
+
         public EditLineWindow(VLine line)
         {
             InitializeComponent();
+
+            tbBackground = tb_A.Background;
+
             SetFields(line);
         }
 
@@ -51,6 +56,21 @@ namespace GraphicsEditor.Forms.Styles.EditElementWindows
         private void CountCoordinates()
         {
 
+        }
+
+        private void TextBox_TextChanged(object sender, RoutedEventArgs e)
+        {
+            if (sender is TextBox tb)
+            {
+                if (int.TryParse(tb.Text, out int res))
+                {
+                    tb.Background = tbBackground;
+                }
+                else
+                {
+                    tb.Background = new SolidColorBrush(Colors.Orange);
+                }
+            }
         }
     }
 }
