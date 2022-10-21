@@ -116,7 +116,7 @@ namespace GraphicsEditor.Modules
                         Point[] pts = cl.RenderPoints;
                         for (int j = 0; j < pts.Length && !found; j++)
                         {
-                            if (Math.Abs(pts[j].X - x) < 5 && Math.Abs(pts[j].Y - y) < 5)
+                            if (Math.Abs(pts[j].X - x) < eps && Math.Abs(pts[j].Y - y) < eps)
                             {
                                 found = true;
                                 toRemove.Add(cl);
@@ -322,8 +322,6 @@ namespace GraphicsEditor.Modules
                         _elements.Remove(item);
                     }
                 }
-
-                SendSignalToRender();
             });
         }
         #endregion

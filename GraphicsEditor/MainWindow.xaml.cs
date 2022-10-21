@@ -141,6 +141,7 @@ namespace GraphicsEditor
                 case Instrument.Pen:
                     {
                         _engine.EditingElement = null;
+                        _engine.DelayRenderAsync(50);
                         break;
                     }
                 case Instrument.Line:
