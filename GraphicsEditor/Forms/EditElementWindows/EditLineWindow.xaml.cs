@@ -22,13 +22,16 @@ namespace GraphicsEditor.Forms.Styles.EditElementWindows
     {
         public VLine? ResultLine { get; set; }
 
-        private Brush tbBackground;
+        private Brush _tbBackground;
+        private bool _isReady;
 
         public EditLineWindow(VLine line)
         {
             InitializeComponent();
 
-            tbBackground = tb_A.Background;
+            _tbBackground = tb_x1.Background;
+
+            ResultLine = line.Clone();
 
             SetFields(line);
         }
@@ -58,19 +61,70 @@ namespace GraphicsEditor.Forms.Styles.EditElementWindows
 
         }
 
-        private void TextBox_TextChanged(object sender, RoutedEventArgs e)
+        private void ColorButton_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
+            if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                ResultLine.Color = colorDialog.Color;
+
+                System.Drawing.SolidBrush sb = new System.Drawing.SolidBrush(colorDialog.Color);
+                SolidColorBrush solidColorBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(sb.Color.A, sb.Color.R, sb.Color.G, sb.Color.B));
+                ((Button)sender).Background = solidColorBrush;
+            }
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (sender is TextBox tb)
             {
                 if (int.TryParse(tb.Text, out int res))
                 {
-                    tb.Background = tbBackground;
+                    tb.Background = _tbBackground;
+                    _isReady = true;
+                    SetValueToLine(tb.Tag.ToString(), res);
                 }
                 else
                 {
                     tb.Background = new SolidColorBrush(Colors.Orange);
+                    _isReady = false;
                 }
             }
+        }
+
+        private void SetValueToLine(string tag, int value)
+        {
+            switch (tag)
+            {
+                case "x1": ResultLine.Point1.X = value; break;
+                case "y1": ResultLine.Point1.Y = value; break;
+                case "z1": ResultLine.Point1.Z = value; break;
+                case "x2": ResultLine.Point2.X = value; break;
+                case "y2": ResultLine.Point2.Y = value; break;
+                case "z2": ResultLine.Point2.Z = value; break;
+                case "size": ResultLine.Size = value; break;
+            }
+        }
+
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+            if (_isReady)
+            {
+                DialogResult = true;                
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Данные введены неправильно");
+            }
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+            ResultLine = null;
+            _isReady = true;
+            this.Close();
         }
     }
 }

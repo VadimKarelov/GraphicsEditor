@@ -29,6 +29,17 @@
             this.ChangeProjection();
         }
 
+        public TDPoint(Camera camera, TDPoint p)
+        {
+            _x = p.X;
+            _y = p.Y;
+            _z = p.Z;
+
+            _camera = camera;
+
+            this.ChangeProjection();
+        }
+
         public void ChangeProjection()
         {
             _camera.ChangeProjection(this);

@@ -26,6 +26,19 @@ namespace GraphicsEditor.Modules.Elements
             this.ChangeProjection();
         }
 
+        public VLine(Camera camera, TDPoint p1, TDPoint p2, int size, Color color)
+        {
+            Point1 = new TDPoint(camera, p1);
+            Point2 = new TDPoint(camera, p2);
+
+            Size = size;
+            Color = color;
+
+            _camera = camera;
+
+            this.ChangeProjection();
+        }
+
         public void ChangeProjection()
         {
             //_camera.ChangeProjection(this);
@@ -52,6 +65,11 @@ namespace GraphicsEditor.Modules.Elements
         {
             return obj is VLine ln && Point1.Equals(ln.Point1) && Point2.Equals(ln.Point2)
                 && this.Color == ln.Color && this.Size == ln.Size;
+        }
+
+        public VLine Clone()
+        {
+            return new VLine(this._camera, this.Point1, this.Point2, this.Size, this.Color);
         }
     }
 }

@@ -8,13 +8,13 @@
         Title="EditLineWindow" Height="300" Width="400" Style="{StaticResource defaultWindow}">
     <Window.Resources>
         <Style TargetType="TextBox">
-            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Margin" Value="5"/>
             <Setter Property="Width" Value="50"/>
             <Setter Property="VerticalAlignment" Value="Center"/>            
         </Style>
 
         <Style TargetType="TextBlock">
-            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Margin" Value="5"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
 
@@ -35,37 +35,37 @@
 
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <TextBlock Text="X1"/>
-            <TextBox x:Name="tb_x1"/>
+            <TextBox x:Name="tb_x1" Tag="x1" TextChanged="TextBox_TextChanged"/>
 
             <TextBlock Text="Y1"/>
-            <TextBox x:Name="tb_y1"/>
+            <TextBox x:Name="tb_y1" Tag="y1" TextChanged="TextBox_TextChanged"/>
 
             <TextBlock Text="Z1"/>
-            <TextBox x:Name="tb_z1"/>
+            <TextBox x:Name="tb_z1" Tag="z1" TextChanged="TextBox_TextChanged"/>
         </StackPanel>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <TextBlock Text="X2"/>
-            <TextBox x:Name="tb_x2"/>
+            <TextBox x:Name="tb_x2" Tag="x2" TextChanged="TextBox_TextChanged"/>
 
             <TextBlock Text="Y2"/>
-            <TextBox x:Name="tb_y2"/>
+            <TextBox x:Name="tb_y2" Tag="y2" TextChanged="TextBox_TextChanged"/>
 
             <TextBlock Text="Z2"/>
-            <TextBox x:Name="tb_z2"/>
+            <TextBox x:Name="tb_z2" Tag="z2" TextChanged="TextBox_TextChanged"/>
         </StackPanel>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal">
             <TextBlock Text="Толщина:"/>
-            <TextBox x:Name="tb_size"/>
+            <TextBox x:Name="tb_size" Tag="size" TextChanged="TextBox_TextChanged"/>
         </StackPanel>
 
         <StackPanel Grid.Row="3" Orientation="Horizontal">
             <TextBlock Text="Цвет: " VerticalAlignment="Center"/>
-            <Button Width="30" Height="30" x:Name="bt_color"/>
+            <Button Width="30" Height="30" x:Name="bt_color" Click="ColorButton_Click"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="4" Orientation="Horizontal">
+        <!--<StackPanel Grid.Row="4" Orientation="Horizontal">
             <TextBox x:Name="tb_A"/>
             <TextBlock Text="x +"/>
 
@@ -73,14 +73,17 @@
             <TextBlock Text="y +"/>
 
             <TextBox x:Name="tb_C"/>
+            <TextBlock Text="z +"/>
+
+            <TextBox x:Name="tb_D"/>
             <TextBlock Text=" = 0"/>
-        </StackPanel>
+        </StackPanel>-->
 
         <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button>
+            <Button Click="Save_Click">
                 <TextBlock Text="Сохранить"/>
             </Button>
-            <Button>
+            <Button Click="Cancel_Click">
                 <TextBlock Text="Отмена"/>
             </Button>
         </StackPanel>

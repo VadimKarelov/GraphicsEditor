@@ -1,4 +1,5 @@
-﻿using GraphicsEditor.Modules;
+﻿using GraphicsEditor.Forms.Styles.EditElementWindows;
+using GraphicsEditor.Modules;
 using GraphicsEditor.Modules.Elements;
 using System;
 using System.Threading;
@@ -353,5 +354,26 @@ namespace GraphicsEditor
             bt_line.Background = _defaultButtonBrush;
         }
         #endregion
+
+        private void InstrumentallyAddition_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button bt)
+            {
+                switch (bt.Tag.ToString())
+                {
+                    case "line": AddLineInstrumentally(); break;
+                }
+            }
+        }
+
+        private void AddLineInstrumentally()
+        {
+            EditLineWindow f = new(new VLine(_engine.Camera, 0, 0, 0, 0, 0, 0, 1,
+                System.Drawing.Color.FromArgb(255, 0, 0, 0)));
+            if (f.ShowDialog() == true)
+            {
+                _engine.AddElementAsync(f.ResultLine);
+            }
+        }
     }
 }
