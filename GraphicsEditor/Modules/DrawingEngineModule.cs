@@ -16,11 +16,6 @@ namespace GraphicsEditor.Modules
 
             gr.Clear(Color.White);
 
-            if (editingElement is not null)
-            {
-                DrawSelection(gr, editingElement);
-            }
-
             foreach (IElement el in cpEl)
             {
                 if (el is VPoint pt)
@@ -35,6 +30,11 @@ namespace GraphicsEditor.Modules
                 {
                     DrawCurveLine(gr, cl);
                 }
+            }
+
+            if (editingElement is not null)
+            {
+                DrawSelection(gr, editingElement);
             }
 
             return btmp;
@@ -69,6 +69,7 @@ namespace GraphicsEditor.Modules
         {
             int s = 10;
             gr.FillEllipse(new SolidBrush(Color.Red), x - s / 2, y - s / 2, s, s);
+            gr.DrawEllipse(new Pen(Color.Purple, 1), x - s / 2, y - s / 2, s, s);
         }
     }
 }

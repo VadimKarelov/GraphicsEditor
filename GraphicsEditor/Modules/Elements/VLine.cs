@@ -41,8 +41,6 @@ namespace GraphicsEditor.Modules.Elements
 
         public void ChangeProjection()
         {
-            //_camera.ChangeProjection(this);
-
             Point1.ChangeProjection();
             Point2.ChangeProjection();
         }
@@ -52,6 +50,17 @@ namespace GraphicsEditor.Modules.Elements
             Point1 = p1;
             Point2 = p2;
 
+            this.ChangeProjection();
+        }
+
+        public void ChangeLocationByRenderCoords(int dx, int dy)
+        {
+            switch (_camera.Plane)
+            {
+                case ProjectionPlane.XY: Point1.X += dx; Point2.X += dx; Point1.Y += dy; Point2.Y += dy; break;
+                case ProjectionPlane.XZ: Point1.X += dx; Point2.X += dx; Point1.Z += dy; Point2.Z += dy; break;
+                case ProjectionPlane.YZ: Point1.Y += dx; Point2.Y += dx; Point1.Z += dy; Point2.Z += dy; break;
+            }
             this.ChangeProjection();
         }
 

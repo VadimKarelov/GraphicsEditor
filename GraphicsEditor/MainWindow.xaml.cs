@@ -21,6 +21,7 @@ namespace GraphicsEditor
         private System.Windows.Media.Brush _selectedButtonBrush;
 
         private System.Drawing.Color _selectedColor;
+        private Point _previousMousePoint;
         private Instrument _selectedInstrument;
         private Plane _selectedPlane;
 
@@ -38,6 +39,8 @@ namespace GraphicsEditor
 
             _defaultButtonBrush = bt_arrow.Background;
             _selectedButtonBrush = new SolidColorBrush(Colors.Orange);
+
+            _previousMousePoint = new Point(0, 0);
 
             _renderTimer = new DispatcherTimer();
             _renderTimer.Tick += UpdateField;
@@ -81,6 +84,10 @@ namespace GraphicsEditor
                 case Instrument.Nothing:
                     {
                         _engine.SelectElement((int)pos.X, (int)pos.Y, (int)sl_Size.Value);
+                        if (_engine.EditingElement != null)
+                        {
+                            _previousMousePoint = pos;
+                        }
                         break;
                     }
                 case Instrument.Pen:
@@ -110,6 +117,14 @@ namespace GraphicsEditor
 
             switch (_selectedInstrument)
             {
+                case Instrument.Nothing:
+                    {
+                        if (e.LeftButton == MouseButtonState.Pressed && _engine.EditingElement != null)
+                        {
+                            MoveElement(_engine.EditingElement, pos);
+                        }
+                        break;
+                    }
                 case Instrument.Pen:
                     {
                         if (e.LeftButton == MouseButtonState.Pressed &&
@@ -164,7 +179,7 @@ namespace GraphicsEditor
         }
         #endregion
 
-        #region add elements
+        #region elements
         private async void RemoveElementsAsync(Point pos, int size)
         {
             await Task.Run(() =>
@@ -230,7 +245,7 @@ namespace GraphicsEditor
             line.Point2.X = x;
             line.Point2.Y = y;
             line.Point2.Z = z;
-        }
+        }  
 
         private async void AddPointToCurve(VCurve cl, Point pos)
         {
@@ -246,6 +261,23 @@ namespace GraphicsEditor
                 TDPoint pt = new(_engine.Camera, x, y, z);
                 cl.AddPoint(pt);
             });            
+        }
+
+        private void MoveElement(IElement element, Point newMousePoint)
+        {
+            if (element != null && element is VLine ln)
+            {
+                ChangeLineLocation(ln, newMousePoint);
+                _previousMousePoint = newMousePoint;
+            }
+        }
+
+        private void ChangeLineLocation(VLine line, Point newMousePoint)
+        {
+            int dx = (int)newMousePoint.X - (int)_previousMousePoint.X;
+            int dy = (int)newMousePoint.Y - (int)_previousMousePoint.Y;
+
+            line.ChangeLocationByRenderCoords(dx, dy);
         }
         #endregion
 
