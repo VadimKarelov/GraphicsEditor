@@ -78,6 +78,11 @@ namespace GraphicsEditor
 
             switch (_selectedInstrument)
             {
+                case Instrument.Nothing:
+                    {
+                        _engine.SelectElement((int)pos.X, (int)pos.Y, (int)sl_Size.Value);
+                        break;
+                    }
                 case Instrument.Pen:
                     {
                         VCurve cl = AddCurve(pos);
@@ -345,6 +350,8 @@ namespace GraphicsEditor
 
             SetButtonsInactive();
             ((Button)sender).Background = _selectedButtonBrush;
+
+            _engine.EditingElement = null;
         }
 
         private void SetButtonsInactive()
@@ -356,6 +363,7 @@ namespace GraphicsEditor
         }
         #endregion
 
+        #region other windows
         private void InstrumentallyAddition_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button bt)
@@ -376,5 +384,6 @@ namespace GraphicsEditor
                 _engine.AddElementAsync(f.ResultLine);
             }
         }
+        #endregion
     }
 }

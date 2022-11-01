@@ -27,6 +27,16 @@ namespace GraphicsEditor.Modules.Elements
             this.ChangeProjection();
         }
 
+        public VPoint(Camera camera, TDPoint pt, int size, Color cl)
+        {
+            Point = new TDPoint(camera, pt);
+            Size = size;
+            Color = cl;
+            _camera = camera;
+
+            this.ChangeProjection();
+        }
+
         public void ChangeProjection()
         {
             _camera.ChangeProjection(this);

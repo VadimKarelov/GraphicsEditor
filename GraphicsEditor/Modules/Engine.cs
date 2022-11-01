@@ -12,6 +12,7 @@ using System.Threading;
 using Point = System.Drawing.Point;
 using System.Windows.Media;
 using Pen = System.Drawing.Pen;
+using System.Diagnostics;
 
 namespace GraphicsEditor.Modules
 {
@@ -20,8 +21,7 @@ namespace GraphicsEditor.Modules
         public List<IElement> Elements => _elements;
         public List<string> StringElements => _stringElements;
         public BitmapImage BitmapImage => _bitmapImg;
-        public Camera Camera => _camera;
-        public IElement? EditingElement { get; set; }
+        public Camera Camera => _camera;        
 
         private List<IElement> _elements = new List<IElement>();
 
@@ -39,6 +39,23 @@ namespace GraphicsEditor.Modules
         private bool _isRenderRequired;
         private object _renderCounterLocker;
 
+        public IElement? EditingElement
+        {
+            get
+            {
+                return _editingElement;
+            }
+            set
+            {
+                lock (_editingElementLocker)
+                {
+                    _editingElement = value;
+                }
+            }
+        }
+        private IElement? _editingElement;
+        private object _editingElementLocker;
+
         public Engine(int width, int height)
         {
             _width = width;
@@ -50,6 +67,8 @@ namespace GraphicsEditor.Modules
             _bitmapImg = new BitmapImage();
 
             _camera = new Camera();
+
+            _editingElementLocker = new();
         }
 
         #region change engine parameters
@@ -105,7 +124,7 @@ namespace GraphicsEditor.Modules
                     }
                     else if (cpEl[i] is VLine ln)
                     {
-                        if (IsPointOnLine(x, y, ln))
+                        if (IsPointOnLine(x, y, eps, ln))
                         {
                             toRemove.Add(ln);
                         }
@@ -157,9 +176,11 @@ namespace GraphicsEditor.Modules
             {
                 SendSignalToRender();
 
+                int minInterval = 33;
+
                 while (true)
                 {
-                    if (_renderCounter >= 20 && (_isRenderRequired || EditingElement != null))
+                    if (_renderCounter >= minInterval && (_isRenderRequired || EditingElement != null))
                     {
                         lock (_renderCounterLocker)
                         {
@@ -175,11 +196,11 @@ namespace GraphicsEditor.Modules
                         Optimization();
                     }
 
-                    Thread.Sleep(20);
+                    Thread.Sleep(minInterval);
 
                     lock (_renderCounterLocker)
                     {
-                        _renderCounter += 20;
+                        _renderCounter += minInterval;
                     }
                 }
             });
@@ -334,7 +355,7 @@ namespace GraphicsEditor.Modules
             {
                 btmp = new Bitmap(_width, _height);
             }
-            Graphics gr = Graphics.FromImage(btmp);
+            
             List<IElement> cpEl;
 
             // copy elements
@@ -343,34 +364,7 @@ namespace GraphicsEditor.Modules
                 cpEl = new List<IElement>(_elements);
             }
 
-            gr.Clear(Color.White);
-
-            foreach (IElement el in cpEl)
-            {
-                if (el is VPoint pt)
-                {
-                    gr.FillEllipse(new SolidBrush(pt.Color), pt.Point.RenderX, pt.Point.RenderY, pt.Size, pt.Size);
-                }
-                else if (el is VLine ln)
-                {
-                    gr.DrawLine(new Pen(ln.Color, ln.Size), ln.Point1.RenderX, ln.Point1.RenderY, ln.Point2.RenderX, ln.Point2.RenderY);
-                }
-                else if (el is VCurve cl)
-                {
-                    Point[] pts = cl.RenderPoints;
-                    if (pts.Length == 1)
-                    {
-                        gr.FillEllipse(new SolidBrush(cl.Color), pts[0].X, pts[0].Y, cl.Size, cl.Size);
-                    }
-                    else if (pts.Length > 1)
-                    {
-                        Pen pen = new Pen(cl.Color, cl.Size);
-                        pen.StartCap = System.Drawing.Drawing2D.LineCap.Round;
-                        pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
-                        gr.DrawCurve(pen, pts);
-                    }
-                }
-            }
+            btmp = DrawingEngineModule.Draw(btmp, cpEl, EditingElement);
 
             BitmapImage t = ToBitmapImage(btmp);
 
@@ -395,6 +389,33 @@ namespace GraphicsEditor.Modules
                 bitmapImage.Freeze();
 
                 return bitmapImage;
+            }
+        }
+        #endregion
+
+        #region element selection
+        public void SelectElement(int x, int y, int eps)
+        {
+            lock (_elements)
+            {
+                bool f = false;
+                foreach (IElement element in _elements)
+                {
+                    if (element is VLine ln)
+                    {
+                        if (IsPointOnLine(x, y, eps, ln))
+                        {
+                            EditingElement = element;
+                            f = true;
+                            break;
+                        }
+                    }
+                }
+                if (!f)
+                {
+                    EditingElement = null;
+                }
+                SendSignalToRender();
             }
         }
         #endregion
@@ -448,22 +469,15 @@ namespace GraphicsEditor.Modules
             SendSignalToRender();
         }        
 
-        private bool IsPointOnLine(int x, int y, VLine ln)
+        private bool IsPointOnLine(int x, int y, int eps, VLine ln)
         {
-            double eps = 10;
+            return Math.Abs(L(x, y, ln.Point1.X, ln.Point1.Y) + L(x, y, ln.Point2.X, ln.Point2.Y) 
+                - L(ln.Point1.X, ln.Point1.Y, ln.Point2.X, ln.Point2.Y)) <= eps;
+        }
 
-            if (x + eps < Math.Min(ln.Point1.RenderX, ln.Point2.RenderX))
-                return false;
-            if (y + eps < Math.Min(ln.Point1.RenderY, ln.Point2.RenderY))
-                return false;
-
-            if (x - eps > Math.Max(ln.Point1.RenderX, ln.Point2.RenderX))
-                return false;
-            if (y - eps > Math.Max(ln.Point1.RenderY, ln.Point2.RenderY))
-                return false;
-
-            return (x - ln.Point1.RenderX) * (ln.Point2.RenderY - ln.Point1.RenderY) -
-                (y - ln.Point1.RenderY) * (ln.Point2.RenderX - ln.Point1.RenderX) <= eps;
+        private double L(int x1, int y1, int x2, int y2)
+        {
+            return Math.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
         }
     }
 }
