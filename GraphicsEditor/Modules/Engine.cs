@@ -191,7 +191,7 @@ namespace GraphicsEditor.Modules
                         Render();
                         UpdateElementsList();
                     }
-                    else if (_renderCounter % 5000 == 0)
+                    else if (_renderCounter > 5000)
                     {
                         Optimization();
                     }
