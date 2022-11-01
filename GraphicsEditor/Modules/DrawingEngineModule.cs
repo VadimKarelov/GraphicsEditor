@@ -60,8 +60,8 @@ namespace GraphicsEditor.Modules
         {
             if (editingElement is VLine ln)
             {
-                DrawEllipseFromCenterPoint(gr, ln.Point1.X, ln.Point1.Y);
-                DrawEllipseFromCenterPoint(gr, ln.Point2.X, ln.Point2.Y);
+                DrawEllipseFromCenterPoint(gr, ln.Point1.RenderX, ln.Point1.RenderY);
+                DrawEllipseFromCenterPoint(gr, ln.Point2.RenderX, ln.Point2.RenderY);
             }
         }
 

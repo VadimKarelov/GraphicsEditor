@@ -115,7 +115,15 @@
                 </Grid>
             </Border>
 
-            <Image Grid.Column="1" x:Name="field" Cursor="Pen" MouseMove="Canvas_MouseMove" MouseDown="Canvas_MouseDown" MouseUp="Canvas_MouseUp"/>
+            <Image Grid.Column="1" x:Name="field" Cursor="Pen" MouseMove="Canvas_MouseMove" MouseDown="Canvas_MouseDown" MouseUp="Canvas_MouseUp">
+                <Image.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Редактировать"/>
+                        <MenuItem Header="Отразить по вертикали"/>
+                        <MenuItem Header="Отразить по горизонтали"/>
+                    </ContextMenu>
+                </Image.ContextMenu>
+            </Image>
             <Button Grid.Column="1" x:Name="uou" Visibility="Hidden" SizeChanged="Window_SizeChanged"/>
         </Grid>
 

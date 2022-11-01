@@ -471,8 +471,8 @@ namespace GraphicsEditor.Modules
 
         private bool IsPointOnLine(int x, int y, int eps, VLine ln)
         {
-            return Math.Abs(L(x, y, ln.Point1.X, ln.Point1.Y) + L(x, y, ln.Point2.X, ln.Point2.Y) 
-                - L(ln.Point1.X, ln.Point1.Y, ln.Point2.X, ln.Point2.Y)) <= eps;
+            return Math.Abs(L(x, y, ln.Point1.RenderX, ln.Point1.RenderY) + L(x, y, ln.Point2.RenderX, ln.Point2.RenderY) 
+                - L(ln.Point1.RenderX, ln.Point1.RenderY, ln.Point2.RenderX, ln.Point2.RenderY)) <= eps;
         }
 
         private double L(int x1, int y1, int x2, int y2)
