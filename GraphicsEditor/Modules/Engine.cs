@@ -156,6 +156,18 @@ namespace GraphicsEditor.Modules
             });
         }
 
+        public async void RemoveElementAsync(IElement element)
+        {
+            await Task.Run(() =>
+            {
+                lock (_elements)
+                {
+                    _elements.Remove(element);
+                }
+                SendSignalToRender();
+            });
+        }
+
         public async void AddElementAsync(IElement element)
         {
             await Task.Run(() =>
@@ -180,7 +192,7 @@ namespace GraphicsEditor.Modules
 
                 while (true)
                 {
-                    if (_renderCounter >= minInterval && (_isRenderRequired || EditingElements != null && EditingElements.Count == 1))
+                    if (_renderCounter >= minInterval && (_isRenderRequired || EditingElements != null))
                     {
                         lock (_renderCounterLocker)
                         {

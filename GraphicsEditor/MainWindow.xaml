@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GraphicsEditor"
         mc:Ignorable="d"
+        KeyDown="Window_KeyDown"
+        KeyUp="Window_KeyUp"
         Title="Paint 15:28" Style="{StaticResource defaultWindow}">
     <Window.Resources>
         <Style TargetType="Button" BasedOn="{StaticResource defaultButton}">
@@ -115,12 +117,11 @@
                 </Grid>
             </Border>
 
-            <Image Grid.Column="1" x:Name="field" Cursor="Pen" MouseMove="Canvas_MouseMove" MouseDown="Canvas_MouseDown" MouseUp="Canvas_MouseUp" KeyDown="Canvas_KeyDown" KeyUp="Canvas_KeyUp">
+            <Image Grid.Column="1" x:Name="field" Cursor="Pen" MouseMove="Canvas_MouseMove" MouseDown="Canvas_MouseDown" MouseUp="Canvas_MouseUp">
                 <Image.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Редактировать"/>
-                        <MenuItem Header="Отразить по вертикали"/>
-                        <MenuItem Header="Отразить по горизонтали"/>
+                        <MenuItem Header="Редактировать" Click="InstrumentallyEditing_Click"/>
+                        <MenuItem Header="Добавить в группу"/>
                     </ContextMenu>
                 </Image.ContextMenu>
             </Image>

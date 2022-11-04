@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GraphicsEditor.Forms.Styles.EditElementWindows"
         mc:Ignorable="d"
-        Title="EditLineWindow" Height="300" Width="400" Style="{StaticResource defaultWindow}">
+        Title="Редактирование" Height="300" Width="400" Style="{StaticResource defaultWindow}">
     <Window.Resources>
         <Style TargetType="TextBox">
             <Setter Property="Margin" Value="5"/>

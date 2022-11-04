@@ -2,6 +2,7 @@
 using GraphicsEditor.Modules;
 using GraphicsEditor.Modules.Elements;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -127,7 +128,7 @@ namespace GraphicsEditor
                     {
                         if (e.LeftButton == MouseButtonState.Pressed && _engine.EditingElements != null)
                         {
-                            MoveElement(_engine.EditingElements[0], pos);
+                            MoveElements(_engine.EditingElements, pos);
                         }
                         break;
                     }
@@ -186,7 +187,7 @@ namespace GraphicsEditor
         #endregion
 
         #region key events
-        private void Canvas_KeyDown(object sender, KeyEventArgs e)
+        private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
             {
@@ -194,7 +195,7 @@ namespace GraphicsEditor
             }
         }
 
-        private void Canvas_KeyUp(object sender, KeyEventArgs e)
+        private void Window_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
             {
@@ -287,13 +288,16 @@ namespace GraphicsEditor
             });            
         }
 
-        private void MoveElement(IElement element, Point newMousePoint)
+        private void MoveElements(List<IElement> elements, Point newMousePoint)
         {
-            if (element != null && element is VLine ln)
+            foreach (IElement element in elements)
             {
-                ChangeLineLocation(ln, newMousePoint);
-                _previousMousePoint = newMousePoint;
+                if (element != null && element is VLine ln)
+                {
+                    ChangeLineLocation(ln, newMousePoint);                    
+                }
             }
+            _previousMousePoint = newMousePoint;
         }
 
         private void ChangeLineLocation(VLine line, Point newMousePoint)
@@ -440,6 +444,22 @@ namespace GraphicsEditor
                 _engine.AddElementAsync(f.ResultLine);
             }
         }
-        #endregion        
+
+        private void InstrumentallyEditing_Click(object sender, RoutedEventArgs e)
+        {
+            if (_engine.EditingElements is not null)
+            {
+                if (_engine.EditingElements[0] is VLine ln)
+                {
+                    EditLineWindow f = new(ln);
+                    if (f.ShowDialog() == true)
+                    {
+                        _engine.RemoveElementAsync(ln);
+                        _engine.AddElementAsync(f.ResultLine);
+                    }
+                }
+            }
+        }
+        #endregion
     }
 }
