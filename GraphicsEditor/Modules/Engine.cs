@@ -39,22 +39,22 @@ namespace GraphicsEditor.Modules
         private bool _isRenderRequired;
         private object _renderCounterLocker;
 
-        public IElement? EditingElement
+        public List<IElement>? EditingElements
         {
             get
             {
-                return _editingElement;
+                return _editingElements;
             }
             set
             {
-                lock (_editingElementLocker)
+                lock (_editingElementsLocker)
                 {
-                    _editingElement = value;
+                    _editingElements = value;
                 }
             }
         }
-        private IElement? _editingElement;
-        private object _editingElementLocker;
+        private List<IElement>? _editingElements;
+        private object _editingElementsLocker;
 
         public Engine(int width, int height)
         {
@@ -68,7 +68,7 @@ namespace GraphicsEditor.Modules
 
             _camera = new Camera();
 
-            _editingElementLocker = new();
+            _editingElementsLocker = new();
         }
 
         #region change engine parameters
@@ -180,7 +180,7 @@ namespace GraphicsEditor.Modules
 
                 while (true)
                 {
-                    if (_renderCounter >= minInterval && (_isRenderRequired || EditingElement != null))
+                    if (_renderCounter >= minInterval && (_isRenderRequired || EditingElements != null && EditingElements.Count == 1))
                     {
                         lock (_renderCounterLocker)
                         {
@@ -374,7 +374,7 @@ namespace GraphicsEditor.Modules
                 cpEl = new List<IElement>(_elements);
             }
 
-            btmp = DrawingEngineModule.Draw(btmp, cpEl, EditingElement);
+            btmp = DrawingEngineModule.Draw(btmp, cpEl, EditingElements);
 
             BitmapImage t = ToBitmapImage(btmp);
 
@@ -404,7 +404,7 @@ namespace GraphicsEditor.Modules
         #endregion
 
         #region element selection
-        public void SelectElement(int x, int y, int eps)
+        public void SelectElement(int x, int y, int eps, bool append)
         {
             lock (_elements)
             {
@@ -415,7 +415,15 @@ namespace GraphicsEditor.Modules
                     {
                         if (IsPointOnLine(x, y, eps, ln))
                         {
-                            EditingElement = element;
+                            if (EditingElements is null || !append)
+                            {
+                                EditingElements = new();
+                                EditingElements.Add(element);
+                            }
+                            else if (append && EditingElements.IndexOf(element) == -1)
+                            {
+                                EditingElements.Add(element);
+                            }
                             f = true;
                             break;
                         }
@@ -423,7 +431,7 @@ namespace GraphicsEditor.Modules
                 }
                 if (!f)
                 {
-                    EditingElement = null;
+                    EditingElements = null;
                 }
                 SendSignalToRender();
             }

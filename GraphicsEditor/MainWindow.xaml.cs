@@ -28,6 +28,8 @@ namespace GraphicsEditor
         private Engine _engine;
         private DispatcherTimer _renderTimer;
 
+        private bool _controlPressed;
+
         #region initialization
         public MainWindow()
         {
@@ -41,6 +43,8 @@ namespace GraphicsEditor
             _selectedButtonBrush = new SolidColorBrush(Colors.Orange);
 
             _previousMousePoint = new Point(0, 0);
+
+            _controlPressed = false;
 
             _renderTimer = new DispatcherTimer();
             _renderTimer.Tick += UpdateField;
@@ -83,8 +87,8 @@ namespace GraphicsEditor
             {
                 case Instrument.Nothing:
                     {
-                        _engine.SelectElement((int)pos.X, (int)pos.Y, (int)sl_Size.Value);
-                        if (_engine.EditingElement != null)
+                        _engine.SelectElement((int)pos.X, (int)pos.Y, (int)sl_Size.Value, _controlPressed);
+                        if (_engine.EditingElements != null)
                         {
                             _previousMousePoint = pos;
                         }
@@ -93,13 +97,15 @@ namespace GraphicsEditor
                 case Instrument.Pen:
                     {
                         VCurve cl = AddCurve(pos);
-                        _engine.EditingElement = cl;
+                        _engine.EditingElements = new();
+                        _engine.EditingElements.Add(cl);
                         break;
                     }
                 case Instrument.Line:
                     {
                         VLine line = AddLine(pos);
-                        _engine.EditingElement = line;
+                        _engine.EditingElements = new();
+                        _engine.EditingElements.Add(line);
                         break;
                     }
                 case Instrument.Eraser:
@@ -119,16 +125,16 @@ namespace GraphicsEditor
             {
                 case Instrument.Nothing:
                     {
-                        if (e.LeftButton == MouseButtonState.Pressed && _engine.EditingElement != null)
+                        if (e.LeftButton == MouseButtonState.Pressed && _engine.EditingElements != null)
                         {
-                            MoveElement(_engine.EditingElement, pos);
+                            MoveElement(_engine.EditingElements[0], pos);
                         }
                         break;
                     }
                 case Instrument.Pen:
                     {
                         if (e.LeftButton == MouseButtonState.Pressed &&
-                            _engine.EditingElement != null && _engine.EditingElement is VCurve cl)
+                            _engine.EditingElements != null && _engine.EditingElements[0] is VCurve cl)
                         {
                             AddPointToCurve(cl, pos);
                         }
@@ -136,7 +142,7 @@ namespace GraphicsEditor
                     }
                 case Instrument.Line:
                     {
-                        if (_engine.EditingElement != null && _engine.EditingElement is VLine ln)
+                        if (_engine.EditingElements != null && _engine.EditingElements[0] is VLine ln)
                         {
                             ChangeLineCoords(ln, pos);
                         }
@@ -161,20 +167,38 @@ namespace GraphicsEditor
             {
                 case Instrument.Pen:
                     {
-                        _engine.EditingElement = null;
+                        _engine.EditingElements = null;
                         _engine.DelayRenderAsync(50);
                         break;
                     }
                 case Instrument.Line:
                     {
-                        if (_engine.EditingElement != null && _engine.EditingElement is VLine ln)
+                        if (_engine.EditingElements != null && _engine.EditingElements[0] is VLine ln)
                         {
                             ChangeLineCoords(ln, pos);
-                            _engine.EditingElement = null;
+                            _engine.EditingElements = null;
                             _engine.DelayRenderAsync(50);
                         }
                         break;
                     }
+            }
+        }
+        #endregion
+
+        #region key events
+        private void Canvas_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
+            {
+                _controlPressed = true;
+            }
+        }
+
+        private void Canvas_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
+            {
+                _controlPressed = false;
             }
         }
         #endregion
@@ -370,7 +394,7 @@ namespace GraphicsEditor
             SetButtonsInactive();
             ((Button)sender).Background = _selectedButtonBrush;
 
-            _engine.EditingElement = null;
+            _engine.EditingElements = null;
         }
 
         private void SetButtonsInactive()
@@ -416,6 +440,6 @@ namespace GraphicsEditor
                 _engine.AddElementAsync(f.ResultLine);
             }
         }
-        #endregion
+        #endregion        
     }
 }

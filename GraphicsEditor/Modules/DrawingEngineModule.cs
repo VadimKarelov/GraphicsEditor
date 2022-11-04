@@ -10,7 +10,7 @@ namespace GraphicsEditor.Modules
 {
     internal static class DrawingEngineModule
     {
-        public static Bitmap Draw(Bitmap btmp, List<IElement> cpEl, IElement? editingElement)
+        public static Bitmap Draw(Bitmap btmp, List<IElement> cpEl, List<IElement>? editingElements)
         {
             Graphics gr = Graphics.FromImage(btmp);
 
@@ -18,9 +18,9 @@ namespace GraphicsEditor.Modules
 
             DrawR(gr, cpEl);
 
-            if (editingElement is not null)
+            if (editingElements is not null)
             {
-                DrawSelection(gr, editingElement);
+                DrawSelection(gr, editingElements);
             }
 
             return btmp;
@@ -65,12 +65,15 @@ namespace GraphicsEditor.Modules
             }
         }
 
-        private static void DrawSelection(Graphics gr, IElement editingElement)
+        private static void DrawSelection(Graphics gr, List<IElement> editingElements)
         {
-            if (editingElement is VLine ln)
+            foreach (var elem in editingElements)
             {
-                DrawEllipseFromCenterPoint(gr, ln.Point1.RenderX, ln.Point1.RenderY);
-                DrawEllipseFromCenterPoint(gr, ln.Point2.RenderX, ln.Point2.RenderY);
+                if (elem is VLine ln)
+                {
+                    DrawEllipseFromCenterPoint(gr, ln.Point1.RenderX, ln.Point1.RenderY);
+                    DrawEllipseFromCenterPoint(gr, ln.Point2.RenderX, ln.Point2.RenderY);
+                }
             }
         }
 

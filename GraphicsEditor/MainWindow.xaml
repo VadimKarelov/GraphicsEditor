@@ -115,7 +115,7 @@
                 </Grid>
             </Border>
 
-            <Image Grid.Column="1" x:Name="field" Cursor="Pen" MouseMove="Canvas_MouseMove" MouseDown="Canvas_MouseDown" MouseUp="Canvas_MouseUp">
+            <Image Grid.Column="1" x:Name="field" Cursor="Pen" MouseMove="Canvas_MouseMove" MouseDown="Canvas_MouseDown" MouseUp="Canvas_MouseUp" KeyDown="Canvas_KeyDown" KeyUp="Canvas_KeyUp">
                 <Image.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Редактировать"/>
