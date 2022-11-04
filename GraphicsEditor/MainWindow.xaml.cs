@@ -346,19 +346,6 @@ namespace GraphicsEditor
         }
         #endregion
 
-        private void SelectColor_Click(object sender, RoutedEventArgs e)
-        {
-            System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
-            if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                _selectedColor = colorDialog.Color;
-
-                System.Drawing.SolidBrush sb = new System.Drawing.SolidBrush(colorDialog.Color);
-                SolidColorBrush solidColorBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(sb.Color.A, sb.Color.R, sb.Color.G, sb.Color.B));
-                ((Button)sender).Background = solidColorBrush;
-            }
-        }
-
         #region instrument selection
         enum Instrument
         {
@@ -396,6 +383,19 @@ namespace GraphicsEditor
         #endregion
 
         #region other windows
+        private void SelectColor_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
+            if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                _selectedColor = colorDialog.Color;
+
+                System.Drawing.SolidBrush sb = new System.Drawing.SolidBrush(colorDialog.Color);
+                SolidColorBrush solidColorBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(sb.Color.A, sb.Color.R, sb.Color.G, sb.Color.B));
+                ((Button)sender).Background = solidColorBrush;
+            }
+        }
+
         private void InstrumentallyAddition_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button bt)

@@ -271,6 +271,8 @@ namespace GraphicsEditor.Modules
                     cpEl = new List<IElement>(_elements);
                 }
 
+                bool _isOptimized = false;
+
                 for (int i = cpEl.Count - 1; i >= 0; i--)
                 {
                     if (i > 0)
@@ -280,6 +282,7 @@ namespace GraphicsEditor.Modules
                             if (cpEl[i].Equals(cpEl[j]))
                             {
                                 toRemove.Add(cpEl[j]);
+                                _isOptimized = true;
                             }
                         }
                     }
@@ -288,6 +291,7 @@ namespace GraphicsEditor.Modules
                         if (!cl.Points.Any())
                         {
                             toRemove.Add(cpEl[i]);
+                            _isOptimized = true;
                         }
                         else
                         {
@@ -332,6 +336,7 @@ namespace GraphicsEditor.Modules
                         if (ln.Point1.Equals(ln.Point2))
                         {
                             toRemove.Add(cpEl[i]);
+                            _isOptimized = true;
                         }
                     }
                 }
@@ -342,6 +347,11 @@ namespace GraphicsEditor.Modules
                     {
                         _elements.Remove(item);
                     }
+                }
+
+                if (_isOptimized)
+                {
+                    SendSignalToRender();
                 }
             });
         }

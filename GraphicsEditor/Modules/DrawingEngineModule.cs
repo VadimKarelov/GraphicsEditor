@@ -16,6 +16,18 @@ namespace GraphicsEditor.Modules
 
             gr.Clear(Color.White);
 
+            DrawR(gr, cpEl);
+
+            if (editingElement is not null)
+            {
+                DrawSelection(gr, editingElement);
+            }
+
+            return btmp;
+        }
+
+        private static void DrawR(Graphics gr, List<IElement> cpEl)
+        {
             foreach (IElement el in cpEl)
             {
                 if (el is VPoint pt)
@@ -30,14 +42,11 @@ namespace GraphicsEditor.Modules
                 {
                     DrawCurveLine(gr, cl);
                 }
+                else if (el is VGroup group)
+                {
+                    DrawR(gr, group.Elements);
+                }
             }
-
-            if (editingElement is not null)
-            {
-                DrawSelection(gr, editingElement);
-            }
-
-            return btmp;
         }
 
         private static void DrawCurveLine(Graphics gr, VCurve cl)
