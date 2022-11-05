@@ -3,7 +3,6 @@ using GraphicsEditor.Modules;
 using GraphicsEditor.Modules.Elements;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -327,6 +326,11 @@ namespace GraphicsEditor
         private void AddElementsToGroup_Click(object sender, RoutedEventArgs e)
         {
             _engine.AddEditingElementsToGroupAsync();
+        }
+
+        private void Ungrouping_Click(object sender, RoutedEventArgs e)
+        {
+            _engine.UngroupingEditingElementsAsync();
         }
         #endregion
 

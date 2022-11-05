@@ -202,6 +202,33 @@ namespace GraphicsEditor.Modules
                 }
             });
         }
+
+        public async void UngroupingEditingElementsAsync()
+        {
+            await Task.Run(() =>
+            {
+                if (_editingElements != null)
+                {
+                    bool f = false;
+                    foreach (var elem in _editingElements)
+                    {
+                        if (elem is VGroup grp)
+                        {
+                            foreach (var item in grp.Elements)
+                            {
+                                this.AddElementAsync(item);
+                            }
+                            this.RemoveElementAsync(grp);
+                            f = true;
+                        }
+                    }
+                    if (f)
+                    {
+                        SendSignalToRender();
+                    }
+                }
+            });
+        }
         #endregion
 
         #region async render and background processes

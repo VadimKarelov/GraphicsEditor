@@ -122,6 +122,7 @@
                     <ContextMenu>
                         <MenuItem Header="Редактировать" Click="InstrumentallyEditing_Click"/>
                         <MenuItem Header="Добавить в группу" Click="AddElementsToGroup_Click"/>
+                        <MenuItem Header="Разгруппировать" Click="Ungrouping_Click"/>
                     </ContextMenu>
                 </Image.ContextMenu>
             </Image>

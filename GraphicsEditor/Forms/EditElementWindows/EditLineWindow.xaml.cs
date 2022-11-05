@@ -24,6 +24,7 @@ namespace GraphicsEditor.Forms.Styles.EditElementWindows
 
         private Brush _tbBackground;
         private bool _isReady;
+        private bool _isAnglesReady;
 
         public EditLineWindow(VLine line)
         {
@@ -49,16 +50,6 @@ namespace GraphicsEditor.Forms.Styles.EditElementWindows
             tb_size.Text = ln.Size.ToString();
 
             bt_color.Background = new SolidColorBrush(Color.FromArgb(ln.Color.A, ln.Color.R, ln.Color.G, ln.Color.B));
-        }
-
-        private void CountCoefficients(VLine ln)
-        {
-
-        }
-
-        private void CountCoordinates()
-        {
-
         }
 
         private void ColorButton_Click(object sender, RoutedEventArgs e)
@@ -125,6 +116,35 @@ namespace GraphicsEditor.Forms.Styles.EditElementWindows
             ResultLine = null;
             _isReady = true;
             this.Close();
+        }
+
+        private void AngleTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender is TextBox tb)
+            {
+                if (int.TryParse(tb.Text, out int res))
+                {
+                    tb.Background = _tbBackground;
+                    _isAnglesReady = true;
+                }
+                else
+                {
+                    tb.Background = new SolidColorBrush(Colors.Orange);
+                    _isAnglesReady = false;
+                }
+            }
+        }
+
+        private void Rotate_Click(object sender, RoutedEventArgs e)
+        {
+            if (_isAnglesReady)
+            {
+                
+            }
+            else
+            {
+                MessageBox.Show("Данные введены неправильно");
+            }
         }
     }
 }
