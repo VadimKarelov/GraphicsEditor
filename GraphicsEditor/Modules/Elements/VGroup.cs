@@ -18,7 +18,8 @@ namespace GraphicsEditor.Modules.Elements
         public VGroup(Camera camera)
         {
             _camera = camera;
-            Color = Color.White;
+            _elements = new();
+            Color = RandomColor();
         }
 
         public void ChangeProjection()
@@ -36,7 +37,12 @@ namespace GraphicsEditor.Modules.Elements
 
         public override string ToString()
         {
-            return $"VGroup ({_elements.Count})";
+            string res = $"Группа ({_elements.Count})";
+            foreach (var element in _elements)
+            {
+                res += $"\n-{element}";
+            }
+            return res;
         }
 
         public override bool Equals(object? obj)
@@ -47,6 +53,16 @@ namespace GraphicsEditor.Modules.Elements
         public VGroup Clone()
         {
             return new VGroup(this._camera);
+        }
+
+        private Color RandomColor()
+        {
+            Random random = new Random();
+            byte a = (byte)random.Next(0, 256);
+            byte r = (byte)random.Next(0, 256);
+            byte g = (byte)random.Next(0, 256);
+            byte b = (byte)random.Next(0, 256);
+            return Color.FromArgb(a, r, g, b);
         }
     }
 }

@@ -3,6 +3,7 @@ using GraphicsEditor.Modules;
 using GraphicsEditor.Modules.Elements;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -49,7 +50,7 @@ namespace GraphicsEditor
 
             _renderTimer = new DispatcherTimer();
             _renderTimer.Tick += UpdateField;
-            _renderTimer.Interval = TimeSpan.FromMilliseconds(20);
+            _renderTimer.Interval = TimeSpan.FromMilliseconds(40);
             _renderTimer.Start();
 
             _engine.InitAsyncRender();
@@ -75,7 +76,13 @@ namespace GraphicsEditor
         {
             field.Source = _engine.BitmapImage;
             lb_elements.ItemsSource = _engine.StringElements;
-            status_ElementsNumber.Text = "Els: " + _engine.Elements.Count.ToString();
+            status_ElementsNumber.Text = "Elements: " + _engine.Elements.Count.ToString();
+            status_Threads.Text = "Threads: " + GetThreadsNumber();
+        }
+
+        private int GetThreadsNumber()
+        {
+            return System.Diagnostics.Process.GetCurrentProcess().Threads.Count;
         }
         #endregion
 
@@ -290,14 +297,23 @@ namespace GraphicsEditor
 
         private void MoveElements(List<IElement> elements, Point newMousePoint)
         {
+            MoveElementsR(elements, newMousePoint);
+            _previousMousePoint = newMousePoint;
+        }
+
+        private void MoveElementsR(List<IElement> elements, Point newMousePoint)
+        {
             foreach (IElement element in elements)
             {
-                if (element != null && element is VLine ln)
+                if (element is VLine ln)
                 {
-                    ChangeLineLocation(ln, newMousePoint);                    
+                    ChangeLineLocation(ln, newMousePoint);
+                }
+                else if (element is VGroup group)
+                {
+                    MoveElementsR(group.Elements, newMousePoint);
                 }
             }
-            _previousMousePoint = newMousePoint;
         }
 
         private void ChangeLineLocation(VLine line, Point newMousePoint)
@@ -306,6 +322,11 @@ namespace GraphicsEditor
             int dy = (int)newMousePoint.Y - (int)_previousMousePoint.Y;
 
             line.ChangeLocationByRenderCoords(dx, dy);
+        }
+
+        private void AddElementsToGroup_Click(object sender, RoutedEventArgs e)
+        {
+            _engine.AddEditingElementsToGroupAsync();
         }
         #endregion
 

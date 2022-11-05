@@ -13,6 +13,7 @@ using Point = System.Drawing.Point;
 using System.Windows.Media;
 using Pen = System.Drawing.Pen;
 using System.Diagnostics;
+using System.Linq.Expressions;
 
 namespace GraphicsEditor.Modules
 {
@@ -171,12 +172,34 @@ namespace GraphicsEditor.Modules
         public async void AddElementAsync(IElement element)
         {
             await Task.Run(() =>
-            {
+            {                
                 lock (_elements)
                 {
                     _elements.Add(element);
                 }
                 SendSignalToRender();
+            });
+        }
+
+        public async void AddEditingElementsToGroupAsync()
+        {
+            await Task.Run(() =>
+            {
+                if (_editingElements != null)
+                {
+                    VGroup gr = new(this._camera);
+                    lock (_editingElementsLocker)
+                    {
+                        foreach (var item in _editingElements)
+                        {
+                            gr.AddElement(item);
+                            this.RemoveElementAsync(item);
+                        }
+                    }
+                    _editingElements = null;
+                    this.AddElementAsync(gr);
+                    SendSignalToRender();
+                }
             });
         }
         #endregion
@@ -423,30 +446,50 @@ namespace GraphicsEditor.Modules
                 bool f = false;
                 foreach (IElement element in _elements)
                 {
-                    if (element is VLine ln)
+                    if (CheckElementsForSelectionR(element, x, y, eps))
                     {
-                        if (IsPointOnLine(x, y, eps, ln))
+                        if (EditingElements is null || !append)
                         {
-                            if (EditingElements is null || !append)
-                            {
-                                EditingElements = new();
-                                EditingElements.Add(element);
-                            }
-                            else if (append && EditingElements.IndexOf(element) == -1)
-                            {
-                                EditingElements.Add(element);
-                            }
-                            f = true;
-                            break;
+                            EditingElements = new();
+                            EditingElements.Add(element);
                         }
+                        else if (append && EditingElements.IndexOf(element) == -1)
+                        {
+                            EditingElements.Add(element);
+                        }
+                        f = true;
+                        break;
                     }
                 }
                 if (!f)
                 {
                     EditingElements = null;
-                }
-                SendSignalToRender();
+                    SendSignalToRender();
+                }                
             }
+        }
+
+        private bool CheckElementsForSelectionR(IElement element, int x, int y, int eps)
+        {
+            if (element is VLine ln)
+            {
+                if (IsPointOnLine(x, y, eps, ln))
+                {
+                    return true;
+                }
+            }
+            else if (element is VGroup group)
+            {
+                foreach (var item in group.Elements)
+                {
+                    bool f = CheckElementsForSelectionR(item, x, y, eps);
+                    if (f)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
         #endregion
 

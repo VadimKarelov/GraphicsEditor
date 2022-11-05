@@ -121,7 +121,7 @@
                 <Image.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Редактировать" Click="InstrumentallyEditing_Click"/>
-                        <MenuItem Header="Добавить в группу"/>
+                        <MenuItem Header="Добавить в группу" Click="AddElementsToGroup_Click"/>
                     </ContextMenu>
                 </Image.ContextMenu>
             </Image>
@@ -132,6 +132,7 @@
             <TextBlock x:Name="status_CursorPosition"/>
             <TextBlock x:Name="status_ElementsNumber"/>
             <TextBlock x:Name="status_debug"/>
+            <TextBlock x:Name="status_Threads"/>
         </StatusBar>
     </Grid>
 </Window>

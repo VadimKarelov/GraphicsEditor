@@ -44,7 +44,7 @@ namespace GraphicsEditor.Modules.Elements
 
         public override string ToString()
         {
-            return $"VPoint ({Point.X};{Point.Y};{Point.Z}) [{Size}]";
+            return $"Точка ({Point.X};{Point.Y};{Point.Z}) [{Size}]";
         }
 
         public override bool Equals(object? obj)

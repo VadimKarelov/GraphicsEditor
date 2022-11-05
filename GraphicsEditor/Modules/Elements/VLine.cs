@@ -66,7 +66,7 @@ namespace GraphicsEditor.Modules.Elements
 
         public override string ToString()
         {
-            return $"VLine ({Point1.X};{Point1.Y};{Point1.Z})-" +
+            return $"Линия ({Point1.X};{Point1.Y};{Point1.Z})-" +
                 $"({Point2.X};{Point2.Y};{Point2.Z}) [{Size}]";
         }
 

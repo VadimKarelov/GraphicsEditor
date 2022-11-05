@@ -56,9 +56,9 @@ namespace GraphicsEditor.Modules.Elements
         public override string ToString()
         {
             if (Points.Count > 0)
-                return $"Curve line ({Points[0].X};{Points[0].Y};{Points[0].Z}) ({Points.Count}) [{Size}]";
+                return $"Кривая ({Points[0].X};{Points[0].Y};{Points[0].Z}) ({Points.Count}) [{Size}]";
             else
-                return $"Curve line - empty";
+                return $"Кривая - пустая";
         }
 
         public override bool Equals(object? obj)

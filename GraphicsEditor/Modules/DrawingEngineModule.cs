@@ -20,7 +20,7 @@ namespace GraphicsEditor.Modules
 
             if (editingElements is not null)
             {
-                DrawSelection(gr, editingElements);
+                DrawSelection(gr, editingElements, Color.Red);
             }
 
             return btmp;
@@ -65,22 +65,26 @@ namespace GraphicsEditor.Modules
             }
         }
 
-        private static void DrawSelection(Graphics gr, List<IElement> editingElements)
+        private static void DrawSelection(Graphics gr, List<IElement> editingElements, Color color)
         {
             foreach (var elem in editingElements)
             {
                 if (elem is VLine ln)
                 {
-                    DrawEllipseFromCenterPoint(gr, ln.Point1.RenderX, ln.Point1.RenderY);
-                    DrawEllipseFromCenterPoint(gr, ln.Point2.RenderX, ln.Point2.RenderY);
+                    DrawEllipseFromCenterPoint(gr, ln.Point1.RenderX, ln.Point1.RenderY, color);
+                    DrawEllipseFromCenterPoint(gr, ln.Point2.RenderX, ln.Point2.RenderY, color);
+                }
+                else if (elem is VGroup grp)
+                {
+                    DrawSelection(gr, grp.Elements, grp.Color);
                 }
             }
         }
 
-        private static void DrawEllipseFromCenterPoint(Graphics gr, int x, int y)
+        private static void DrawEllipseFromCenterPoint(Graphics gr, int x, int y, Color color)
         {
             int s = 10;
-            gr.FillEllipse(new SolidBrush(Color.Red), x - s / 2, y - s / 2, s, s);
+            gr.FillEllipse(new SolidBrush(color), x - s / 2, y - s / 2, s, s);
             gr.DrawEllipse(new Pen(Color.Purple, 1), x - s / 2, y - s / 2, s, s);
         }
     }
