@@ -11,6 +11,7 @@ namespace GraphicsEditor.Modules.Tools
     {
         private double[][] _mat;
         private IElement _element;
+
         public M(VLine ln)
         {
             double[] p1 = { ln.Point1.X, ln.Point1.Y, ln.Point1.Z, 1 };
@@ -57,19 +58,28 @@ namespace GraphicsEditor.Modules.Tools
             Normalization();
         }
 
+        /// <summary>
+        /// More than 1 -> bigger, less than 1 -> smaller
+        /// </summary>
+        public void Scaling(double sx, double sy, double sz)
+        {
+            _mat = Multiplication(_mat, GetScalingMatrix(sx, sy, sz));
+            Normalization();
+        }
+
         private static double[][] Multiplication(double[][] a, double[][] b)
         {
-            if (a.GetLength(1) != b.GetLength(0)) 
+            if (a[0].Length != b.Length) 
                 throw new Exception("Number of columns in mat 1 must be equal to row number in mat2");
 
-            double[][] r = new double[a.GetLength(0)][];
+            double[][] r = new double[a.Length][];
 
-            for (int i = 0; i < a.GetLength(0); i++)
+            for (int i = 0; i < a.Length; i++)
             {
-                r[i] = new double[b.GetLength(1)];
-                for (int j = 0; j < b.GetLength(1); j++)
+                r[i] = new double[b[0].Length];
+                for (int j = 0; j < b[0].Length; j++)
                 {
-                    for (int k = 0; k < b.GetLength(0); k++)
+                    for (int k = 0; k < b.Length; k++)
                     {
                         r[i][j] += a[i][k] * b[k][j];
                     }
@@ -81,7 +91,7 @@ namespace GraphicsEditor.Modules.Tools
 
         private void Normalization()
         {
-            for (int i = 0; i < _mat.GetLength(0); i++)
+            for (int i = 0; i < _mat.Length; i++)
             {
                 _mat[i][0] = _mat[i][0] / _mat[i][3];
                 _mat[i][1] = _mat[i][1] / _mat[i][3];
@@ -142,6 +152,20 @@ namespace GraphicsEditor.Modules.Tools
             double[] r1 = { Math.Cos(angle), Math.Sin(angle), 0, 0 };
             double[] r2 = { -Math.Sin(angle), Math.Cos(angle), 0, 0 };
             double[] r3 = { 0, 0, 1, 0 };
+            double[] r4 = { 0, 0, 0, 1 };
+            double[][] res = new double[4][];
+            res[0] = r1;
+            res[1] = r2;
+            res[2] = r3;
+            res[3] = r4;
+            return res;
+        }
+
+        private static double[][] GetScalingMatrix(double sx, double sy, double sz)
+        {
+            double[] r1 = { sx, 0, 0, 0 };
+            double[] r2 = { 0, sy, 0, 0 };
+            double[] r3 = { 0, 0, sz, 0 };
             double[] r4 = { 0, 0, 0, 1 };
             double[][] res = new double[4][];
             res[0] = r1;

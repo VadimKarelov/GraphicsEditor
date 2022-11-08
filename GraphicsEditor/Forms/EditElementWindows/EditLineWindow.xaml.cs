@@ -1,4 +1,5 @@
 ﻿using GraphicsEditor.Modules.Elements;
+using GraphicsEditor.Modules.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +36,10 @@ namespace GraphicsEditor.Forms.Styles.EditElementWindows
             ResultLine = line.Clone();
 
             SetFields(line);
+
+            tb_ax.Background = _tbBackground;
+            tb_ay.Background = _tbBackground;
+            tb_az.Background = _tbBackground;
         }
 
         private void SetFields(VLine ln)
@@ -139,7 +144,21 @@ namespace GraphicsEditor.Forms.Styles.EditElementWindows
         {
             if (_isAnglesReady)
             {
-                
+                double ax = double.Parse(tb_ax.Text);
+                double ay = double.Parse(tb_ay.Text);
+                double az = double.Parse(tb_az.Text);
+
+                int cx = (ResultLine.Point1.X + ResultLine.Point2.X) / 2;
+                int cy = (ResultLine.Point1.Y + ResultLine.Point2.Y) / 2;
+                int cz = (ResultLine.Point1.Z + ResultLine.Point2.Z) / 2;
+
+                M matr = new M(ResultLine);
+                matr.Transition(-cx, -cy, -cz); // move to center
+                matr.Rotation(ax, ay, az);      // rotate
+                matr.Transition(cx, cy, cz);    // move back
+                ResultLine = matr.GetLine();
+
+                SetFields(ResultLine);
             }
             else
             {

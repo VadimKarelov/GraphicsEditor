@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GraphicsEditor.Forms.Styles.EditElementWindows"
         mc:Ignorable="d"
-        Title="Редактирование" Height="350" Width="400" Style="{StaticResource defaultWindow}">
+        Title="Редактирование линии" Height="350" Width="450" Style="{StaticResource defaultWindow}">
     <Window.Resources>
         <Style TargetType="TextBox">
             <Setter Property="Margin" Value="1"/>
@@ -29,9 +29,8 @@
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
+            <RowDefinition Height="2*"/>
             <RowDefinition/>
-            <RowDefinition/>
-            <!--<RowDefinition/>-->
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Orientation="Horizontal">
@@ -67,32 +66,47 @@
             <Button Width="30" Height="30" x:Name="bt_color" Click="ColorButton_Click"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="4" Orientation="Horizontal">
-            <Button Click="Rotate_Click">
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Button Grid.Row="0" Grid.Column="0" Click="Rotate_Click">
                 <TextBlock Text="Повернуть"/>
             </Button>
-            
-            <TextBlock Text="На"/>
-            
-            <TextBox Text="0"/>
-            <TextBlock Text="° по x,"/>
+            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                <TextBlock Text="На"/>
 
-            <TextBox Text="0"/>
-            <TextBlock Text="° по y,"/>
+                <TextBox x:Name="tb_ax" Text="0" TextChanged="AngleTextBox_TextChanged"/>
+                <TextBlock Text="° по x,"/>
 
-            <TextBox Text="0"/>
-            <TextBlock Text="° по z"/>
-        </StackPanel>
+                <TextBox x:Name="tb_ay" Text="0" TextChanged="AngleTextBox_TextChanged"/>
+                <TextBlock Text="° по y,"/>
 
-        <!--<StackPanel Grid.Row="5" Orientation="Horizontal">
-            <Button>
-                <TextBlock Text="Отразить по вертикали"/>
+                <TextBox x:Name="tb_az" Text="0" TextChanged="AngleTextBox_TextChanged"/>
+                <TextBlock Text="° по z"/>
+            </StackPanel>
+
+            <Button Grid.Row="1" Grid.Column="0" Click="Rotate_Click">
+                <TextBlock Text="Масштабировать"/>
             </Button>
-            <Button>
-                <TextBlock Text="Отразить по горизонтали"/>
-            </Button>
-        </StackPanel>-->
-        
+            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                <TextBox x:Name="tb_sx" Text="0" TextChanged="AngleTextBox_TextChanged"/>
+                <TextBlock Text="* x,"/>
+
+                <TextBox x:Name="tb_sy" Text="0" TextChanged="AngleTextBox_TextChanged"/>
+                <TextBlock Text="* y,"/>
+
+                <TextBox x:Name="tb_sz" Text="0" TextChanged="AngleTextBox_TextChanged"/>
+                <TextBlock Text="* z"/>
+            </StackPanel>
+        </Grid>
+
         <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Click="Save_Click">
                 <TextBlock Text="Сохранить"/>
