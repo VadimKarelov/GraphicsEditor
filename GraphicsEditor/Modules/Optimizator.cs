@@ -13,36 +13,25 @@ namespace GraphicsEditor.Modules
     {
         public bool Optimization(Camera camera, List<IElement> elements)
         {
-            List<IElement> cpEl;
-            List<IElement> toRemove = new();
-            List<IElement> toAppend = new();
+            //List<IElement> cpEl;
+            
+            //// copy elements
+            //lock (elements)
+            //{
+            //    cpEl = new List<IElement>(elements);
+            //}
 
-            // copy elements
-            lock (elements)
-            {
-                cpEl = new List<IElement>(elements);
-            }
+            bool isOptimizing = CleanR(camera, elements);
 
-            bool isOptimized = CleanR(camera, cpEl, toRemove, toAppend);
-
-            lock (elements)
-            {
-                foreach (var item in toRemove)
-                {
-                    elements.Remove(item);
-                }
-                foreach (var item in toAppend)
-                {
-                    elements.Add(item);
-                }
-            }
-
-            return isOptimized;
+            return isOptimizing;
         }
 
-        private bool CleanR(Camera camera, List<IElement> cpEl, List<IElement> toRemove, List<IElement> toAppend)
+        private bool CleanR(Camera camera, List<IElement> cpEl)
         {
-            bool isOptimized = false;
+            bool isOptimizing = false;
+
+            List<IElement> toRemove = new();
+            List<IElement> toAppend = new();
 
             for (int i = cpEl.Count - 1; i >= 0; i--)
             {
@@ -53,7 +42,6 @@ namespace GraphicsEditor.Modules
                         if (cpEl[i].Equals(cpEl[j]))
                         {
                             toRemove.Add(cpEl[j]);
-                            isOptimized = true;
                         }
                     }
                 }
@@ -62,13 +50,11 @@ namespace GraphicsEditor.Modules
                     if (!cl.Points.Any())
                     {
                         toRemove.Add(cpEl[i]);
-                        isOptimized = true;
                     }
                     else if (cl.Points.Count == 1)
                     {
                         toAppend.Add(new VPoint(camera, cl.Points[0], cl.Size, cl.Color));
                         toRemove.Add(cpEl[i]);
-                        isOptimized = true;
                     }
                 }
                 else if (cpEl[i] is VLine ln)
@@ -76,16 +62,39 @@ namespace GraphicsEditor.Modules
                     if (ln.Point1.Equals(ln.Point2))
                     {
                         toRemove.Add(cpEl[i]);
-                        isOptimized = true;
                     }
                 }
                 else if (cpEl[i] is VGroup grp)
                 {
-                    isOptimized = CleanR(camera, grp.Elements, toRemove, toAppend);
+                    if (!grp.Elements.Any())
+                    {
+                        toRemove.Add(cpEl[i]);
+                    }
+                    else
+                    {
+                        isOptimizing = isOptimizing || CleanR(camera, grp.Elements);
+                    }
                 }
             }
 
-            return isOptimized;
+            isOptimizing = isOptimizing || toRemove.Any() || toAppend.Any();
+
+            if (isOptimizing)
+            {
+                lock (cpEl)
+                {
+                    foreach (var item in toRemove)
+                    {
+                        cpEl.Remove(item);
+                    }
+                    foreach (var item in toAppend)
+                    {
+                        cpEl.Add(item);
+                    }
+                }
+            }
+
+            return isOptimizing;
         }
     }
 }

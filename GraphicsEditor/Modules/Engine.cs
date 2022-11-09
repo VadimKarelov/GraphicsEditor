@@ -109,56 +109,78 @@ namespace GraphicsEditor.Modules
         {
             await Task.Run(() =>
             {
-                List<IElement> cpEl;
-                List<IElement> toRemove = new();
+                //List<IElement> cpEl;
 
-                // copy elements
-                lock (_elements)
+                //// copy elements
+                //lock (_elements)
+                //{
+                    //cpEl = new List<IElement>(_elements);
+                //}
+
+                bool isRemoving = RemoveAtPointR(x, y, eps, _elements);
+
+                if (isRemoving)
                 {
-                    cpEl = new List<IElement>(_elements);
+                    SendSignalToRender();
                 }
+            });
+        }
 
-                for (int i = cpEl.Count - 1; i >= 0; i--)
+        private bool RemoveAtPointR(int x, int y, int eps, List<IElement> cpEl)
+        {
+            bool isRemoving = false;
+
+            List<IElement> toRemove = new();
+
+            for (int i = cpEl.Count - 1; i >= 0; i--)
+            {
+                if (cpEl[i] is VPoint pt)
                 {
-                    if (cpEl[i] is VPoint pt)
+                    if (Math.Abs(pt.Point.RenderX - x) <= eps && Math.Abs(pt.Point.RenderY - y) <= eps)
                     {
-                        if (Math.Abs(pt.Point.RenderX - x) <= eps && Math.Abs(pt.Point.RenderY - y) <= eps)
-                        {
-                            toRemove.Add(pt);
-                        }
-                    }
-                    else if (cpEl[i] is VLine ln)
-                    {
-                        if (IsPointOnLine(x, y, eps, ln))
-                        {
-                            toRemove.Add(ln);
-                        }
-                    }
-                    else if (cpEl[i] is VCurve cl)
-                    {
-                        bool found = false;
-                        Point[] pts = cl.RenderPoints;
-                        for (int j = 0; j < pts.Length && !found; j++)
-                        {
-                            if (Math.Abs(pts[j].X - x) < eps && Math.Abs(pts[j].Y - y) < eps)
-                            {
-                                found = true;
-                                toRemove.Add(cl);
-                            }
-                        }
+                        toRemove.Add(pt);
                     }
                 }
+                else if (cpEl[i] is VLine ln)
+                {
+                    if (IsPointOnLine(x, y, eps, ln))
+                    {
+                        toRemove.Add(ln);
+                    }
+                }
+                else if (cpEl[i] is VCurve cl)
+                {
+                    bool found = false;
+                    Point[] pts = cl.RenderPoints;
+                    for (int j = 0; j < pts.Length && !found; j++)
+                    {
+                        if (Math.Abs(pts[j].X - x) < eps && Math.Abs(pts[j].Y - y) < eps)
+                        {
+                            found = true;
+                            toRemove.Add(cl);
+                        }
+                    }
+                }
+                else if (cpEl[i] is VGroup grp)
+                {
+                    isRemoving = isRemoving || RemoveAtPointR(x, y, eps, grp.Elements);
+                }
+            }
 
-                lock (_elements)
+            isRemoving = isRemoving || toRemove.Any();
+
+            if (isRemoving)
+            {
+                lock (cpEl)
                 {
                     foreach (var item in toRemove)
                     {
-                        _elements.Remove(item);
+                        cpEl.Remove(item);
                     }
                 }
+            }
 
-                SendSignalToRender();
-            });
+            return isRemoving;
         }
 
         public async void RemoveElementAsync(IElement element)
