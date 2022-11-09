@@ -32,6 +32,8 @@ namespace GraphicsEditor.Modules
 
         private Camera _camera;
 
+        private Optimizator _optimizator;
+
         private int _width;
         private int _height;
         private object _sizeLocker;
@@ -68,6 +70,8 @@ namespace GraphicsEditor.Modules
             _bitmapImg = new BitmapImage();
 
             _camera = new Camera();
+
+            _optimizator = new Optimizator();
 
             _editingElementsLocker = new();
         }
@@ -324,94 +328,9 @@ namespace GraphicsEditor.Modules
         {
             await Task.Run(() =>
             {
-                List<IElement> cpEl;
-                List<IElement> toRemove = new();
+                bool isOptimized = _optimizator.Optimization(this._camera, this._elements);
 
-                // copy elements
-                lock (_elements)
-                {
-                    cpEl = new List<IElement>(_elements);
-                }
-
-                bool _isOptimized = false;
-
-                for (int i = cpEl.Count - 1; i >= 0; i--)
-                {
-                    if (i > 0)
-                    {
-                        for (int j = i - 1; j >= 0; j--)
-                        {
-                            if (cpEl[i].Equals(cpEl[j]))
-                            {
-                                toRemove.Add(cpEl[j]);
-                                _isOptimized = true;
-                            }
-                        }
-                    }
-                    if (cpEl[i] is VCurve cl)
-                    {
-                        if (!cl.Points.Any())
-                        {
-                            toRemove.Add(cpEl[i]);
-                            _isOptimized = true;
-                        }
-                        else
-                        {
-                            /*
-                            bool changed = false;
-                            for (int j = cl.Points.Count - 1; j > 0; j--)
-                            {
-                                if (cl.Points[j].Equals(cl.Points[j - 1]))
-                                {
-                                    lock (cl)
-                                    {
-                                        cl.Points.RemoveAt(j);
-                                    }
-                                    changed = true;
-                                }
-                                // 5 or more elements
-                                
-                                else if (j >= 4)
-                                {
-                                    if (cl.Points[j].X == cl.Points[j - 1].X && cl.Points[j].X == cl.Points[j - 2].X 
-                                    && cl.Points[j].X == cl.Points[j - 3].X && cl.Points[j].X == cl.Points[j - 4].X)
-                                    {
-                                        cl.Points.RemoveAt(j - 2);
-                                        changed = true;
-                                    }
-                                    else if (cl.Points[j].Y == cl.Points[j - 1].Y && cl.Points[j].Y == cl.Points[j - 2].Y
-                                    && cl.Points[j].Y == cl.Points[j - 3].Y && cl.Points[j].Y == cl.Points[j - 4].Y)
-                                    {
-                                        cl.Points.RemoveAt(j - 2);
-                                        changed = true;
-                                    }                                    
-                                }
-                                //
-                            }
-                            if (changed)
-                                cl.ChangeProjection();
-                            */
-                        }
-                    }
-                    if (cpEl[i] is VLine ln)
-                    {
-                        if (ln.Point1.Equals(ln.Point2))
-                        {
-                            toRemove.Add(cpEl[i]);
-                            _isOptimized = true;
-                        }
-                    }
-                }
-
-                lock (_elements)
-                {
-                    foreach (var item in toRemove)
-                    {
-                        _elements.Remove(item);
-                    }
-                }
-
-                if (_isOptimized)
+                if (isOptimized)
                 {
                     SendSignalToRender();
                 }
