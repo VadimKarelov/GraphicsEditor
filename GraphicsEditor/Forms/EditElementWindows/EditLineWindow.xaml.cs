@@ -26,6 +26,7 @@ namespace GraphicsEditor.Forms.Styles.EditElementWindows
         private Brush _tbBackground;
         private bool _isReady;
         private bool _isAnglesReady;
+        private bool _isScaleReady;
 
         public EditLineWindow(VLine line)
         {
@@ -40,6 +41,10 @@ namespace GraphicsEditor.Forms.Styles.EditElementWindows
             tb_ax.Background = _tbBackground;
             tb_ay.Background = _tbBackground;
             tb_az.Background = _tbBackground;
+
+            tb_sx.Background = _tbBackground;
+            tb_sy.Background = _tbBackground;
+            tb_sz.Background = _tbBackground;
         }
 
         private void SetFields(VLine ln)
@@ -127,7 +132,7 @@ namespace GraphicsEditor.Forms.Styles.EditElementWindows
         {
             if (sender is TextBox tb)
             {
-                if (int.TryParse(tb.Text, out int res))
+                if (double.TryParse(tb.Text, out double res))
                 {
                     tb.Background = _tbBackground;
                     _isAnglesReady = true;
@@ -136,6 +141,23 @@ namespace GraphicsEditor.Forms.Styles.EditElementWindows
                 {
                     tb.Background = new SolidColorBrush(Colors.Orange);
                     _isAnglesReady = false;
+                }
+            }
+        }
+
+        private void ScaleTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender is TextBox tb)
+            {
+                if (double.TryParse(tb.Text, out double res))
+                {
+                    tb.Background = _tbBackground;
+                    _isScaleReady = true;
+                }
+                else
+                {
+                    tb.Background = new SolidColorBrush(Colors.Orange);
+                    _isScaleReady = false;
                 }
             }
         }
@@ -155,6 +177,32 @@ namespace GraphicsEditor.Forms.Styles.EditElementWindows
                 M matr = new M(ResultLine);
                 matr.Transition(-cx, -cy, -cz); // move to center
                 matr.Rotation(ax, ay, az);      // rotate
+                matr.Transition(cx, cy, cz);    // move back
+                ResultLine = matr.GetLine();
+
+                SetFields(ResultLine);
+            }
+            else
+            {
+                MessageBox.Show("Данные введены неправильно");
+            }
+        }
+
+        private void Scale_Click(object sender, RoutedEventArgs e)
+        {
+            if (_isScaleReady)
+            {
+                double sx = double.Parse(tb_sx.Text);
+                double sy = double.Parse(tb_sy.Text);
+                double sz = double.Parse(tb_sz.Text);
+
+                int cx = (ResultLine.Point1.X + ResultLine.Point2.X) / 2;
+                int cy = (ResultLine.Point1.Y + ResultLine.Point2.Y) / 2;
+                int cz = (ResultLine.Point1.Z + ResultLine.Point2.Z) / 2;
+
+                M matr = new M(ResultLine);
+                matr.Transition(-cx, -cy, -cz); // move to center
+                matr.Scaling(sx, sy, sz);       // scale
                 matr.Transition(cx, cy, cz);    // move back
                 ResultLine = matr.GetLine();
 

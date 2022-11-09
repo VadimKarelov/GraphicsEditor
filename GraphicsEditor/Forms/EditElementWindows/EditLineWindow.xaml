@@ -92,17 +92,17 @@
                 <TextBlock Text="° по z"/>
             </StackPanel>
 
-            <Button Grid.Row="1" Grid.Column="0" Click="Rotate_Click">
+            <Button Grid.Row="1" Grid.Column="0" Click="Scale_Click">
                 <TextBlock Text="Масштабировать"/>
             </Button>
             <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
-                <TextBox x:Name="tb_sx" Text="0" TextChanged="AngleTextBox_TextChanged"/>
+                <TextBox x:Name="tb_sx" Text="1" TextChanged="ScaleTextBox_TextChanged"/>
                 <TextBlock Text="* x,"/>
 
-                <TextBox x:Name="tb_sy" Text="0" TextChanged="AngleTextBox_TextChanged"/>
+                <TextBox x:Name="tb_sy" Text="1" TextChanged="ScaleTextBox_TextChanged"/>
                 <TextBlock Text="* y,"/>
 
-                <TextBox x:Name="tb_sz" Text="0" TextChanged="AngleTextBox_TextChanged"/>
+                <TextBox x:Name="tb_sz" Text="1" TextChanged="ScaleTextBox_TextChanged"/>
                 <TextBlock Text="* z"/>
             </StackPanel>
         </Grid>

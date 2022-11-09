@@ -483,6 +483,7 @@ namespace GraphicsEditor
                         _engine.AddElementAsync(f.ResultLine);
                     }
                 }
+                _engine.EditingElements = null;
             }
         }
         #endregion
