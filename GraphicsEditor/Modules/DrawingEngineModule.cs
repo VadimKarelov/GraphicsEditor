@@ -1,17 +1,19 @@
 ﻿using GraphicsEditor.Modules.Elements;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GraphicsEditor.Modules
 {
     internal static class DrawingEngineModule
     {
-        public static Bitmap Draw(Bitmap btmp, List<IElement> cpEl, List<IElement>? editingElements)
+        public static Bitmap Draw(Bitmap btmp, List<IElement> elements, List<IElement>? editingElements)
         {
+            List<IElement> cpEl = new();
+            lock (elements)
+            {
+                cpEl = new(elements);
+            }
+
             Graphics gr = Graphics.FromImage(btmp);
 
             gr.Clear(Color.White);

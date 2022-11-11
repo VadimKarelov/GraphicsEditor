@@ -1,4 +1,5 @@
-﻿using GraphicsEditor.Forms.Styles.EditElementWindows;
+﻿using GraphicsEditor.Forms.EditElementWindows;
+using GraphicsEditor.Forms.Styles.EditElementWindows;
 using GraphicsEditor.Modules;
 using GraphicsEditor.Modules.Elements;
 using System;
@@ -49,7 +50,7 @@ namespace GraphicsEditor
 
             _renderTimer = new DispatcherTimer();
             _renderTimer.Tick += UpdateField;
-            _renderTimer.Interval = TimeSpan.FromMilliseconds(40);
+            _renderTimer.Interval = TimeSpan.FromMilliseconds(33);
             _renderTimer.Start();
 
             _engine.InitAsyncRender();
@@ -481,6 +482,15 @@ namespace GraphicsEditor
                     {
                         _engine.RemoveElementAsync(ln);
                         _engine.AddElementAsync(f.ResultLine);
+                    }
+                }
+                else if (_engine.EditingElements[0] is VGroup grp)
+                {
+                    EditGroupWindow f = new(grp);
+                    if (f.ShowDialog() == true)
+                    {
+                        _engine.RemoveElementAsync(grp);
+                        _engine.AddElementAsync(f.ResultGroup);
                     }
                 }
                 _engine.EditingElements = null;

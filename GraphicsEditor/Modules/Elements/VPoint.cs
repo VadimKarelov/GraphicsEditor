@@ -52,5 +52,10 @@ namespace GraphicsEditor.Modules.Elements
             return obj is VPoint pt && this.Point.Equals(pt.Point)
                 && this.Color == pt.Color && this.Size == pt.Size;
         }
+
+        public object Clone()
+        {
+            return new VPoint(_camera, new TDPoint(_camera, Point), Size, Color);
+        }
     }
 }

@@ -1,8 +1,9 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace GraphicsEditor.Modules.Elements
 {
-    public interface IElement
+    public interface IElement : ICloneable
     {
         public Color Color { get; set; }
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GraphicsEditor.Modules.Elements
 {
-    internal class VGroup : IElement
+    public class VGroup : IElement
     {
         public Color Color { get; set; }
         public List<IElement> Elements => _elements;
@@ -50,9 +50,14 @@ namespace GraphicsEditor.Modules.Elements
             return obj is VGroup group && this._elements.Equals(group._elements);
         }
 
-        public VGroup Clone()
+        public object Clone()
         {
-            return new VGroup(this._camera);
+            VGroup res = new VGroup(this._camera);
+            foreach (IElement element in this._elements)
+            {
+                res.AddElement(element.Clone() as IElement);
+            }
+            return res;
         }
 
         private Color RandomColor()

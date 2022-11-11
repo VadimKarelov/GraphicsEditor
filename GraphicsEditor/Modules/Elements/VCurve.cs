@@ -66,5 +66,15 @@ namespace GraphicsEditor.Modules.Elements
             return obj is VCurve cl && this.Points.Equals(cl.Points) && this.Size.Equals(cl.Size)
                 && this.Color.Equals(cl.Color);
         }
+
+        public object Clone()
+        {
+            VCurve res = new VCurve(_camera, Size, Color);
+            foreach (TDPoint pt in this.Points)
+            {
+                res.AddPoint(new TDPoint(_camera, pt));
+            }
+            return res;
+        }
     }
 }

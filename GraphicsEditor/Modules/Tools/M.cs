@@ -1,9 +1,5 @@
 ﻿using GraphicsEditor.Modules.Elements;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GraphicsEditor.Modules.Tools
 {
@@ -11,6 +7,8 @@ namespace GraphicsEditor.Modules.Tools
     {
         private double[][] _mat;
         private IElement _element;
+
+        public M() { }
 
         public M(VLine ln)
         {
@@ -27,6 +25,8 @@ namespace GraphicsEditor.Modules.Tools
             VLine ln = _element as VLine;
             if (ln != null)
             {
+                Normalization();
+
                 ln.Point1.X = (int)_mat[0][0];
                 ln.Point1.Y = (int)_mat[0][1];
                 ln.Point1.Z = (int)_mat[0][2];
@@ -39,32 +39,37 @@ namespace GraphicsEditor.Modules.Tools
             }
             else
             {
-                throw new Exception("Type of M is not VLine.");
+                return null;
             }
         }
 
-        public void Transition(int dx, int dy, int dz)
+        public virtual void Transition(int dx, int dy, int dz)
         {
             _mat = Multiplication(_mat, GetTransitionMatrix(dx, dy, dz));
-            Normalization();
         }
 
         /// <summary>
         /// All angles in degrees
         /// </summary>
-        public void Rotation(double ax, double ay, double az)
+        public virtual void Rotation(double ax, double ay, double az)
         {
             _mat = Multiplication(_mat, GetRotationMatrix(ax, ay, az));
-            Normalization();
         }
 
         /// <summary>
         /// More than 1 -> bigger, less than 1 -> smaller
         /// </summary>
-        public void Scaling(double sx, double sy, double sz)
+        public virtual void Scaling(double sx, double sy, double sz)
         {
             _mat = Multiplication(_mat, GetScalingMatrix(sx, sy, sz));
-            Normalization();
+        }
+
+        /// <param name="x">Whether it is necessary to reflect on x</param>
+        /// <param name="y">Whether it is necessary to reflect on y</param>
+        /// <param name="z">Whether it is necessary to reflect on z</param>
+        public virtual void Reflection(bool x, bool y, bool z)
+        {
+            _mat = Multiplication(_mat, GetReflectionMatrix(x, y, z));
         }
 
         private static double[][] Multiplication(double[][] a, double[][] b)
@@ -166,6 +171,23 @@ namespace GraphicsEditor.Modules.Tools
             double[] r1 = { sx, 0, 0, 0 };
             double[] r2 = { 0, sy, 0, 0 };
             double[] r3 = { 0, 0, sz, 0 };
+            double[] r4 = { 0, 0, 0, 1 };
+            double[][] res = new double[4][];
+            res[0] = r1;
+            res[1] = r2;
+            res[2] = r3;
+            res[3] = r4;
+            return res;
+        }
+
+        /// <param name="x">Whether it is necessary to reflect on x</param>
+        /// <param name="y">Whether it is necessary to reflect on y</param>
+        /// <param name="z">Whether it is necessary to reflect on z</param>
+        private static double[][] GetReflectionMatrix(bool x, bool y, bool z)
+        {
+            double[] r1 = { x ? -1 : 1, 0, 0, 0 };
+            double[] r2 = { 0, y ? -1 : 1, 0, 0 };
+            double[] r3 = { 0, 0, z ? -1 : 1, 0 };
             double[] r4 = { 0, 0, 0, 1 };
             double[][] res = new double[4][];
             res[0] = r1;

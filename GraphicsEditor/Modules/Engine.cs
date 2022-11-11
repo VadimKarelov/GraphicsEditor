@@ -42,6 +42,8 @@ namespace GraphicsEditor.Modules
         private bool _isRenderRequired;
         private object _renderCounterLocker;
 
+        private bool _isEngineStop;
+
         public List<IElement>? EditingElements
         {
             get
@@ -74,6 +76,8 @@ namespace GraphicsEditor.Modules
             _optimizator = new Optimizator();
 
             _editingElementsLocker = new();
+
+            _isEngineStop = false;
         }
 
         #region change engine parameters
@@ -266,7 +270,7 @@ namespace GraphicsEditor.Modules
 
                 int minInterval = 33;
 
-                while (true)
+                while (!_isEngineStop)
                 {
                     if (_renderCounter >= minInterval && (_isRenderRequired || EditingElements != null))
                     {
@@ -356,6 +360,14 @@ namespace GraphicsEditor.Modules
                 {
                     SendSignalToRender();
                 }
+            });
+        }
+
+        public async void StopEngine()
+        {
+            await Task.Run(() =>
+            {
+                _isEngineStop = true;
             });
         }
         #endregion

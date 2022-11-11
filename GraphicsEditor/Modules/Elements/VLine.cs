@@ -76,7 +76,7 @@ namespace GraphicsEditor.Modules.Elements
                 && this.Color == ln.Color && this.Size == ln.Size;
         }
 
-        public VLine Clone()
+        public object Clone()
         {
             return new VLine(this._camera, this.Point1, this.Point2, this.Size, this.Color);
         }
