@@ -532,5 +532,27 @@ namespace GraphicsEditor.Modules
         {
             return Math.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
         }
+
+        #region
+        public async void SaveElementsAsync(string path)
+        {
+            await Task.Run(() =>
+            {
+                lock (_elements)
+                {
+                    ElementsSaver.SavePoints(_elements, path);
+                }
+            });
+        }
+
+        public void LoadElements(string path)
+        {
+            List<IElement> collection = ElementsSaver.LoadPoints(path);
+            lock (_elements)
+            {
+                _elements = collection;
+            }
+        }
+        #endregion
     }
 }

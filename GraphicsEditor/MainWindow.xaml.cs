@@ -2,6 +2,7 @@
 using GraphicsEditor.Forms.Styles.EditElementWindows;
 using GraphicsEditor.Modules;
 using GraphicsEditor.Modules.Elements;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -494,6 +495,44 @@ namespace GraphicsEditor
                     }
                 }
                 _engine.EditingElements = null;
+            }
+        }
+
+        private void SaveElements_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog f = new()
+            {
+                DefaultExt = "*.json"
+            };
+            if (f.ShowDialog() == true)
+            {
+                try
+                {
+                    ElementsSaver.SavePoints(_engine.Elements, f.FileName);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
+
+        private void LoadElements_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog f = new()
+            {
+                DefaultExt = "*.json"
+            };
+            if (f.ShowDialog() == true)
+            {
+                try
+                {
+                    _engine.LoadElements(f.FileName);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
         #endregion
