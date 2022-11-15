@@ -7,13 +7,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Drawing.Imaging;
-using Color = System.Drawing.Color;
 using System.Threading;
 using Point = System.Drawing.Point;
-using System.Windows.Media;
-using Pen = System.Drawing.Pen;
-using System.Diagnostics;
-using System.Linq.Expressions;
 
 namespace GraphicsEditor.Modules
 {
@@ -533,25 +528,26 @@ namespace GraphicsEditor.Modules
             return Math.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
         }
 
-        #region
+        #region files
         public async void SaveElementsAsync(string path)
         {
             await Task.Run(() =>
             {
                 lock (_elements)
                 {
-                    ElementsSaver.SavePoints(_elements, path);
+                    ElementsSaver.SaveElements(_elements, path);
                 }
             });
         }
 
         public void LoadElements(string path)
         {
-            List<IElement> collection = ElementsSaver.LoadPoints(path);
+            List<IElement> collection = ElementsSaver.LoadElements(_camera, path);
             lock (_elements)
             {
                 _elements = collection;
             }
+            SendSignalToRender();
         }
         #endregion
     }

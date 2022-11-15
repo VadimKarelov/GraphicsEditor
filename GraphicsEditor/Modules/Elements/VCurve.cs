@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace GraphicsEditor.Modules.Elements
 {
-    internal class VCurve : IElement
+    public class VCurve : IElement
     {
         public Color Color { get; set; }
 

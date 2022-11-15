@@ -508,7 +508,7 @@ namespace GraphicsEditor
             {
                 try
                 {
-                    ElementsSaver.SavePoints(_engine.Elements, f.FileName);
+                    ElementsSaver.SaveElements(_engine.Elements, f.FileName);
                 }
                 catch (Exception ex)
                 {
