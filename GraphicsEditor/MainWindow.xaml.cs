@@ -76,7 +76,7 @@ namespace GraphicsEditor
         private void UpdateField(object? sender, EventArgs e)
         {
             field.Source = _engine.BitmapImage;
-            lb_elements.ItemsSource = _engine.StringElements;
+            //lb_elements.ItemsSource = _engine.StringElements;
             status_ElementsNumber.Text = "Elements: " + _engine.Elements.Count.ToString();
             status_Threads.Text = "Threads: " + GetThreadsNumber();
         }
