@@ -143,7 +143,7 @@ namespace GraphicsEditor.Modules.Tools
         {
             double[] r1 = { Math.Cos(angle), 0, -Math.Sin(angle), 0 };
             double[] r2 = { 0, 1, 0, 0 };
-            double[] r3 = { 0, Math.Sin(angle), Math.Cos(angle), 0 };
+            double[] r3 = { Math.Sin(angle), 0, Math.Cos(angle), 0 };
             double[] r4 = { 0, 0, 0, 1 };
             double[][] res = new double[4][];
             res[0] = r1;
