@@ -104,5 +104,16 @@ namespace GraphicsEditor.Modules.Tools
                 m.Reflection(x, y, z);
             }
         }
+
+        /// <summary>
+        /// All angles (fi & teta) in degrees
+        /// </summary>
+        public override void TrimetricProjection(double fi, double teta, double z)
+        {
+            foreach (M m in _ms)
+            {
+                m.TrimetricProjection(fi, teta, z);
+            }
+        }
     }
 }

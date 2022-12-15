@@ -72,6 +72,14 @@ namespace GraphicsEditor.Modules.Tools
             _mat = Multiplication(_mat, GetReflectionMatrix(x, y, z));
         }
 
+        /// <summary>
+        /// All angles (fi & teta) in degrees
+        /// </summary>
+        public virtual void TrimetricProjection(double fi, double teta, double z)
+        {
+            _mat = Multiplication(_mat, GetTrimetricProjectionMatrix(fi, teta, z));
+        }
+
         private static double[][] Multiplication(double[][] a, double[][] b)
         {
             if (a[0].Length != b.Length) 
@@ -126,6 +134,10 @@ namespace GraphicsEditor.Modules.Tools
             return Multiplication(Multiplication(Rx(ax * Math.PI / 180), Ry(ay * Math.PI / 180)), Rz(az * Math.PI / 180));
         }
 
+        /// <summary>
+        /// Angle in radians
+        /// </summary>
+        /// <param name="angle">Angle in radians</param>
         private static double[][] Rx(double angle)
         {
             double[] r1 = { 1, 0, 0, 0 };
@@ -139,6 +151,10 @@ namespace GraphicsEditor.Modules.Tools
             res[3] = r4;
             return res;
         }
+        /// <summary>
+        /// Angle in radians
+        /// </summary>
+        /// <param name="angle">Angle in radians</param>
         private static double[][] Ry(double angle)
         {
             double[] r1 = { Math.Cos(angle), 0, -Math.Sin(angle), 0 };
@@ -152,6 +168,10 @@ namespace GraphicsEditor.Modules.Tools
             res[3] = r4;
             return res;
         }
+        /// <summary>
+        /// Angle in radians
+        /// </summary>
+        /// <param name="angle">Angle in radians</param>
         private static double[][] Rz(double angle)
         {
             double[] r1 = { Math.Cos(angle), Math.Sin(angle), 0, 0 };
@@ -194,6 +214,27 @@ namespace GraphicsEditor.Modules.Tools
             res[1] = r2;
             res[2] = r3;
             res[3] = r4;
+            return res;
+        }
+
+        /// <summary>
+        /// Angles in degrees
+        /// </summary>
+        private static double[][] GetTrimetricProjectionMatrix(double fi, double teta, double z)
+        {
+            // projection to z matrix
+            double[] r1 = { 1, 0, 0, 0 };
+            double[] r2 = { 0, 1, 0, 0 };
+            double[] r3 = { 0, 0, 0, 1 / z };
+            double[] r4 = { 0, 0, 0, 1 };
+            double[][] res = new double[4][];
+            res[0] = r1;
+            res[1] = r2;
+            res[2] = r3;
+            res[3] = r4;
+
+            res = Multiplication(GetRotationMatrix(fi * Math.PI / 180, teta * Math.PI / 180, 0), res);
+
             return res;
         }
     }

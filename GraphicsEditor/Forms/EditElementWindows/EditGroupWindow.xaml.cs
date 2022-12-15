@@ -20,6 +20,7 @@ namespace GraphicsEditor.Forms.EditElementWindows
         private Brush _tbBackground;
         private bool _isAnglesReady;
         private bool _isScaleReady;
+        private bool _isProjectionReady;
 
         private Engine _engine;
 
@@ -42,6 +43,10 @@ namespace GraphicsEditor.Forms.EditElementWindows
             tb_sx.Background = _tbBackground;
             tb_sy.Background = _tbBackground;
             tb_sz.Background = _tbBackground;
+
+            tb_afi.Background = _tbBackground;
+            tb_ateta.Background = _tbBackground;
+            tb_zs.Background = _tbBackground;
 
             _engine.InitAsyncRender();
 
@@ -89,6 +94,23 @@ namespace GraphicsEditor.Forms.EditElementWindows
                 {
                     tb.Background = new SolidColorBrush(Colors.Orange);
                     _isScaleReady = false;
+                }
+            }
+        }
+
+        private void ProjectionTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender is TextBox tb)
+            {
+                if (double.TryParse(tb.Text, out double res))
+                {
+                    tb.Background = _tbBackground;
+                    _isProjectionReady = true;
+                }
+                else
+                {
+                    tb.Background = new SolidColorBrush(Colors.Orange);
+                    _isProjectionReady = false;
                 }
             }
         }
@@ -169,6 +191,24 @@ namespace GraphicsEditor.Forms.EditElementWindows
             matr.Transition(cx, cy, cz);        // move back
             ResultGroup = matr.GetGroup();
         }
+
+        private void Projection_Click(object sender, RoutedEventArgs e)
+        {
+            if (_isProjectionReady)
+            {
+                double fi = double.Parse(tb_afi.Text);
+                double teta = double.Parse(tb_ateta.Text);
+                double zs = double.Parse(tb_zs.Text);
+
+                MGroup matr = new MGroup(ResultGroup);
+                matr.TrimetricProjection(fi, teta, zs);
+                ResultGroup = matr.GetGroup();
+            }
+            else
+            {
+                MessageBox.Show("Данные введены неправильно");
+            }
+        }
         #endregion
 
         private void FindCenter(VGroup grp, out int cx, out int cy, out int cz)
@@ -210,18 +250,6 @@ namespace GraphicsEditor.Forms.EditElementWindows
             if (pt.X < minX) minX = pt.X;
             if (pt.Y < minY) minY = pt.Y;
             if (pt.Z < minZ) minZ = pt.Z;
-        }
-
-        private void FindMaxMin_R(List<IElement> elements, ref int maxX, ref int minX,
-            ref int maxY, ref int minY, ref int maxZ, ref int minZ)
-        {
-            foreach (IElement element in elements)
-            {
-                if (element is VLine ln)
-                {
-
-                }
-            }
         }
     }
 }

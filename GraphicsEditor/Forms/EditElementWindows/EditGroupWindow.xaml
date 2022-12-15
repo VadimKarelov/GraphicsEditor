@@ -29,6 +29,7 @@
             <RowDefinition Height="2*"/>
             <RowDefinition/>
             <RowDefinition/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" Grid.Column="0">
@@ -103,7 +104,31 @@
             </Button>
         </StackPanel>
 
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Button Grid.Row="0" Grid.Column="0" Click="Projection_Click">
+                <TextBlock Text="Спроецировать"/>
+            </Button>
+            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                <TextBox x:Name="tb_afi" Text="0" TextChanged="ProjectionTextBox_TextChanged"/>
+                <TextBlock Text="φ"/>
+
+                <TextBox x:Name="tb_ateta" Text="0" TextChanged="ProjectionTextBox_TextChanged"/>
+                <TextBlock Text="θ"/>
+
+                <TextBox x:Name="tb_zs" Text="10" TextChanged="ProjectionTextBox_TextChanged"/>
+                <TextBlock Text="z"/>
+            </StackPanel>
+        </Grid>
+
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Click="Save_Click">
                 <TextBlock Text="Сохранить"/>
             </Button>
